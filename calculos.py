@@ -6,8 +6,3 @@ def calcular_tempo_video(duracao_minutos, velocidade):
         raise ValueError("A duração do video deve ser maior que zero.")
     
     return duracao_minutos / velocidade
-
-
-
-
-print(calcular_tempo_video(30, 1.5))
