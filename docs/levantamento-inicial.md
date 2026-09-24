@@ -1,6 +1,6 @@
 # Academic Hub — requisitos iniciais
 
-Versão 0.3 · 20/09/2026
+Versão 0.5 · 24/09/2026
 
 ## 1. Problema e objetivo
 
@@ -24,6 +24,8 @@ As informações abaixo descrevem a rotina levantada, não regras universais ou 
 - Registrar disciplinas, conteúdo, avaliações, prazos e disponibilidade diária.
 - Calcular o tempo de vídeo conforme a velocidade escolhida e acrescentar a revisão uma vez por aula completa.
 - Exigir duração original e velocidade maiores que zero no cálculo de tempo de vídeo. Valores iguais a zero ou negativos devem ser rejeitados com uma mensagem explicativa. A duração original é distinta do progresso: concluir um vídeo não altera sua duração para zero.
+- Aceitar tempo de revisão maior ou igual a zero. Zero representa uma aula planejada sem tempo reservado para revisão; valores negativos devem ser rejeitados com `ValueError` e mensagem explicativa.
+- Exigir quantidade de microaulas do tipo Python `int` e maior que zero. Outros tipos devem gerar `TypeError`; quantidades inteiras iguais a zero ou negativas devem gerar `ValueError`.
 - Vincular cada microaula e revisão à sua aula e disciplina. Conteúdos de aulas diferentes não devem ser agrupados como uma única aula concluída.
 - Respeitar a disponibilidade diária total, somando todas as disciplinas.
 - Distinguir o prazo regular de entrega da meta de concluir as aulas, que deve considerar a reserva para realizar o projeto.
@@ -38,6 +40,8 @@ Começar por uma calculadora em Python que receba duração dos vídeos, velocid
 
 **Regra de cálculo:** tempo de reprodução = duração original ÷ velocidade. Somar os tempos dos vídeos e acrescentar a revisão da aula uma vez.
 
+A implementação atual de `calcular_tempo_aula` considera microaulas com a mesma duração original e a mesma velocidade de reprodução. Ela multiplica o tempo de uma microaula pela quantidade e acrescenta o tempo de revisão. Durações e velocidades diferentes dentro de uma mesma aula exigirão uma evolução dessa função.
+
 Exemplo: cinco microaulas de 30 minutos em 2×, com revisão de dez minutos, totalizam **85 minutos**. Pausas e exercícios não estão incluídos nessa estimativa.
 
 ### Exemplos para verificar o comportamento
@@ -48,6 +52,11 @@ Exemplo: cinco microaulas de 30 minutos em 2×, com revisão de dez minutos, tot
 | Duração igual a zero ou negativa, com velocidade válida | Rejeitar a entrada com `ValueError` e mensagem explicativa |
 | Velocidade igual a zero ou negativa, com duração válida | Rejeitar a entrada com `ValueError` e mensagem explicativa |
 | Aula completa do exemplo acima | 85 minutos, incluindo uma revisão |
+| Mesma aula do exemplo, com tempo de revisão zero | 75 minutos, considerando somente os vídeos |
+| Tempo de revisão negativo, com as demais entradas válidas | Rejeitar a entrada com `ValueError` e mensagem explicativa |
+| Uma microaula de 30 minutos em 2× e revisão de dez minutos | 25 minutos |
+| Quantidade inteira de microaulas igual a zero ou negativa, com as demais entradas válidas | Rejeitar a entrada com `ValueError` e mensagem explicativa |
+| Quantidade de microaulas de tipo diferente de `int`, com as demais entradas válidas | Rejeitar a entrada com `TypeError` e mensagem explicativa |
 | Três microaulas de uma aula de A e duas de uma aula de B | Nenhuma das duas aulas tem todos os vídeos concluídos |
 | Atividades de 75 minutos em um dia com 60 disponíveis | Indicar que o plano excede a disponibilidade em 15 minutos |
 
