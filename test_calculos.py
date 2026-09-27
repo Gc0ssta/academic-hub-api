@@ -1,6 +1,6 @@
 import pytest
 
-from calculos import calcular_tempo_video, calcular_tempo_aula
+from calculos import calcular_tempo_video, calcular_tempo_aula, cabe_no_tempo
 
 def test_calcular_tempo_video_em_velocidade_1_5():
     assert calcular_tempo_video(30, 1.5) == 20
@@ -63,3 +63,29 @@ def test_calcular_tempo_aula_rejeita_microaula_zero():
 def test_calcular_tempo_aula_rejeita_microaula_negativa():
     with pytest.raises(ValueError):
         calcular_tempo_aula(30, -1, 2, 10)
+
+def test_nao_cabe_quando_tempo_insuficiente():
+    assert cabe_no_tempo(85, 60) is False
+
+def test_cabe_no_tempo_quando_tempo_igual():
+    assert cabe_no_tempo(85, 85) is True
+
+def test_cabe_no_tempo_quando_tempo_disponivel_maior():
+    assert cabe_no_tempo(85, 90) is True
+
+def test_nao_cabe_no_tempo_quando_tempo_disponivel_0_e_menor_tempo_necessario():
+    assert cabe_no_tempo(85, 0) is False
+
+def test_cabe_no_tempo_quando_tempo_necessario_0_e_menor_tempo_disponivel():
+    assert cabe_no_tempo(0, 60) is True
+
+def test_cabe_no_tempo_quando_ambos_tempos_0():
+    assert cabe_no_tempo(0, 0) is True
+
+def test_cabe_no_tempo_rejeita_tempo_necessario_negativo():
+    with pytest.raises(ValueError): 
+        cabe_no_tempo(-1, 60)
+
+def test_cabe_no_tempo_rejeita_tempo_disponivel_negativo():
+    with pytest.raises(ValueError): 
+        cabe_no_tempo(85, -1)

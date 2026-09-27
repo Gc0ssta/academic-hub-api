@@ -1,6 +1,6 @@
 # Academic Hub — requisitos iniciais
 
-Versão 0.5 · 24/09/2026
+Versão 0.6 · 27/09/2026
 
 ## 1. Problema e objetivo
 
@@ -28,6 +28,7 @@ As informações abaixo descrevem a rotina levantada, não regras universais ou 
 - Exigir quantidade de microaulas do tipo Python `int` e maior que zero. Outros tipos devem gerar `TypeError`; quantidades inteiras iguais a zero ou negativas devem gerar `ValueError`.
 - Vincular cada microaula e revisão à sua aula e disciplina. Conteúdos de aulas diferentes não devem ser agrupados como uma única aula concluída.
 - Respeitar a disponibilidade diária total, somando todas as disciplinas.
+- Na comparação entre tempo necessário e disponível, aceitar zero em ambos os parâmetros e rejeitar negativos com `ValueError`. Tempo necessário zero representa ausência de atividades pendentes no período considerado; disponibilidade zero representa ausência de tempo para estudar. Os tempos devem ser expressos em minutos. O planejamento cabe quando o tempo necessário é menor ou igual ao disponível; zero necessário e zero disponível retornam `True`.
 - Distinguir o prazo regular de entrega da meta de concluir as aulas, que deve considerar a reserva para realizar o projeto.
 - Acompanhar o progresso e atualizar as atividades pendentes quando houver mudanças.
 - Informar quando o tempo necessário não couber no período disponível.
@@ -57,6 +58,11 @@ Exemplo: cinco microaulas de 30 minutos em 2×, com revisão de dez minutos, tot
 | Uma microaula de 30 minutos em 2× e revisão de dez minutos | 25 minutos |
 | Quantidade inteira de microaulas igual a zero ou negativa, com as demais entradas válidas | Rejeitar a entrada com `ValueError` e mensagem explicativa |
 | Quantidade de microaulas de tipo diferente de `int`, com as demais entradas válidas | Rejeitar a entrada com `TypeError` e mensagem explicativa |
+| 85 minutos necessários e 60 disponíveis | `cabe_no_tempo` retorna `False` |
+| 85 minutos necessários e 85 disponíveis | `cabe_no_tempo` retorna `True` |
+| 85 minutos necessários e zero disponível | `cabe_no_tempo` retorna `False` |
+| Zero necessário e 60 minutos disponíveis, ou ambos iguais a zero | `cabe_no_tempo` retorna `True` |
+| Tempo necessário ou disponível negativo, com o outro parâmetro válido | Rejeitar a entrada com `ValueError` e mensagem explicativa |
 | Três microaulas de uma aula de A e duas de uma aula de B | Nenhuma das duas aulas tem todos os vídeos concluídos |
 | Atividades de 75 minutos em um dia com 60 disponíveis | Indicar que o plano excede a disponibilidade em 15 minutos |
 

@@ -6,6 +6,8 @@ Atualmente, o projeto calcula o tempo de reprodução de vídeos conforme a velo
 
 Calcula o tempo da aula total com a revisão considerando todas microaulas do mesmo tempo e velocidade. A função valida quantidade de microaulas e permite revisão de zero minutos.
 
+Verifica se o tempo necessário para uma atividade cabe no tempo disponível. A função aceita tempos iguais a zero e rejeita valores negativos, retornando verdadeiro quando há tempo suficiente e falso quando não há.
+
 Os testes automatizados verificam cálculos válidos e a rejeição dessas entradas inválidas.
 
 ## Como executar os testes
@@ -26,6 +28,4 @@ Para executar os testes:
 ```powershell
 .\.venv\Scripts\python.exe -m pytest test_calculos.py -v
 ```
-
-O relatório mostra o resultado de cada teste. Atualmente, são
-esperados 13 testes passando.
+O relatório mostra o resultado de cada teste. Todos devem passar.

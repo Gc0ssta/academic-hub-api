@@ -25,3 +25,13 @@ def calcular_tempo_aula(duracao_microaula, quantidade_microaulas, velocidade, te
     aula_revisao = tempo_aula + tempo_revisao
 
     return aula_revisao
+
+def cabe_no_tempo(tempo_necessario, tempo_disponivel):
+
+    if tempo_necessario < 0:
+        raise ValueError("O tempo necessario não pode ser um número negativo")
+
+    if tempo_disponivel < 0:
+        raise ValueError("O tempo disponivel não pode ser um número negativo")
+
+    return tempo_disponivel >= tempo_necessario
