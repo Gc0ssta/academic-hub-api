@@ -10,10 +10,22 @@ Os testes automatizados verificam cálculos válidos e a rejeição dessas entra
 
 ## Como executar os testes
 
-Com o Python instalado, execute no terminal, a partir da pasta do projeto:
+Projeto testado com Python 3.12.0. Os comandos abaixo são para
+Windows com PowerShell, executados a partir da pasta do projeto.
+
+Na primeira configuração, crie o ambiente virtual e instale as
+dependências de desenvolvimento:
 
 ```powershell
-python test_calculos.py
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 ```
 
-Se todas as verificações passarem, será exibida a mensagem `Teste passou`.
+Para executar os testes:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest test_calculos.py -v
+```
+
+O relatório mostra o resultado de cada teste. Atualmente, são
+esperados 13 testes passando.
