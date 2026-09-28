@@ -8,7 +8,11 @@ def calcular_tempo_video(duracao_minutos, velocidade):
     return duracao_minutos / velocidade
 
 def calcular_tempo_aula(duracao_microaula, quantidade_microaulas, velocidade, tempo_revisao):
+    """Calcula o tempo da aula em minutos, incluindo a revisão.
 
+    Considera microaulas com a mesma duração e velocidade.
+    A quantidade informada deve ser um inteiro maior que zero.
+    """
     if tempo_revisao < 0:
         raise ValueError("O tempo de revisão não pode ser um número negativo")
 

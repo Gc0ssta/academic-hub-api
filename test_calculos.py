@@ -26,27 +26,27 @@ def test_calcular_tempo_video_rejeita_duracao_negativa():
 
 def test_calcular_tempo_aula_com_revisao_em_10():
     assert calcular_tempo_aula(
-    duracao_microaula=30,
-    quantidade_microaulas=5,
-    velocidade=2,
-    tempo_revisao=10,
-) == 85
+        duracao_microaula=30,
+        quantidade_microaulas=5,
+        velocidade=2,
+        tempo_revisao=10,
+    ) == 85
 
 def test_calcular_tempo_aula_com_revisao_em_0():
     assert calcular_tempo_aula(
-    duracao_microaula=30,
-    quantidade_microaulas=5,
-    velocidade=2,
-    tempo_revisao=0,
-) == 75
+        duracao_microaula=30,
+        quantidade_microaulas=5,
+        velocidade=2,
+        tempo_revisao=0,
+    ) == 75
     
 def test_calcular_tempo_aula_com_microaula_1():
     assert calcular_tempo_aula(
-    duracao_microaula=30,
-    quantidade_microaulas=1,
-    velocidade=2,
-    tempo_revisao=10,
-) == 25
+        duracao_microaula=30,
+        quantidade_microaulas=1,
+        velocidade=2,
+        tempo_revisao=10,
+    ) == 25
 
 def test_calcular_tempo_aula_rejeita_revisao_negativa():
     with pytest.raises(ValueError):
@@ -89,3 +89,7 @@ def test_cabe_no_tempo_rejeita_tempo_necessario_negativo():
 def test_cabe_no_tempo_rejeita_tempo_disponivel_negativo():
     with pytest.raises(ValueError): 
         cabe_no_tempo(85, -1)
+
+def test_aula_nao_cabe_em_sessenta_minutos():
+    tempo_aula = calcular_tempo_aula(30, 5, 2, 10)
+    assert cabe_no_tempo(tempo_aula, 60) is False
