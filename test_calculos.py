@@ -93,3 +93,8 @@ def test_cabe_no_tempo_rejeita_tempo_disponivel_negativo():
 def test_aula_nao_cabe_em_sessenta_minutos():
     tempo_aula = calcular_tempo_aula(30, 5, 2, 10)
     assert cabe_no_tempo(tempo_aula, 60) is False
+
+def test_duas_disciplinas_nao_cabem_em_120_minutos():
+    aula_a = calcular_tempo_aula(30, 5, 2, 10)
+    aula_b = calcular_tempo_aula(30, 3, 2, 10)
+    assert cabe_no_tempo(aula_a + aula_b, 120) is False
