@@ -1,6 +1,6 @@
 import pytest
 
-from calculos import calcular_tempo_video, calcular_tempo_aula, cabe_no_tempo
+from calculos import calcular_tempo_video, calcular_tempo_aula, cabe_no_tempo, calcular_microaulas_pendentes
 
 def test_calcular_tempo_video_em_velocidade_1_5():
     assert calcular_tempo_video(30, 1.5) == 20
@@ -95,6 +95,39 @@ def test_aula_nao_cabe_em_sessenta_minutos():
     assert cabe_no_tempo(tempo_aula, 60) is False
 
 def test_duas_disciplinas_nao_cabem_em_120_minutos():
-    aula_a = calcular_tempo_aula(30, 5, 2, 10)
-    aula_b = calcular_tempo_aula(30, 3, 2, 10)
-    assert cabe_no_tempo(aula_a + aula_b, 120) is False
+    tempo_atividades = [calcular_tempo_aula(30, 5, 2, 10), calcular_tempo_aula(30, 3, 2, 10)]
+    tempo_total = sum(tempo_atividades)
+    assert cabe_no_tempo(tempo_total, 120) is False
+
+def test_calcular_microaulas_pendentes_total_5_concluidas_2():
+    assert calcular_microaulas_pendentes(5, 2) == 3
+
+def test_calcular_microaulas_pendentes_concluidas_0():
+    assert calcular_microaulas_pendentes(5, 0) == 5
+
+def test_calcular_microaulas_sem_pendencias():
+    assert calcular_microaulas_pendentes(5, 5) == 0
+
+def test_calcular_microaulas_pendentes_total_nao_pode_decimal():
+    with pytest.raises(TypeError): 
+        calcular_microaulas_pendentes(5.5, 2)
+
+def test_calcular_microaulas_pendentes_concluidas_nao_pode_decimal():
+    with pytest.raises(TypeError): 
+        calcular_microaulas_pendentes(5, 2.5)
+
+def test_calcular_microaulas_pendentes_total_nao_pode_ser_0():
+    with pytest.raises(ValueError): 
+        calcular_microaulas_pendentes(0, 0)
+
+def test_calcular_microaulas_pendentes_total_nao_pode_ser_negativo():
+    with pytest.raises(ValueError): 
+        calcular_microaulas_pendentes(-5, 0)
+
+def test_calcular_microaulas_pendentes_concluidas_nao_pode_ser_negativo():
+    with pytest.raises(ValueError): 
+        calcular_microaulas_pendentes(5, -1)
+
+def test_calcular_microaulas_pendentes_concluidas_nao_pode_ser_maior_que_total():
+    with pytest.raises(ValueError): 
+        calcular_microaulas_pendentes(5, 6)

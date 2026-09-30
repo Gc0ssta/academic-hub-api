@@ -39,3 +39,19 @@ def cabe_no_tempo(tempo_necessario, tempo_disponivel):
         raise ValueError("O tempo disponivel não pode ser um número negativo")
 
     return tempo_disponivel >= tempo_necessario
+
+def calcular_microaulas_pendentes(quantidade_total, quantidade_concluida):
+
+    if type(quantidade_total) is not int or type(quantidade_concluida) is not int:
+        raise TypeError("A quantidade de micro aulas precisa ser numeros inteiros")
+    
+    if quantidade_total <= 0:
+        raise ValueError("A quantidade total deve ser maior que zero.")
+
+    if quantidade_concluida < 0:
+        raise ValueError("A quantidade concluída não pode ser negativa.")
+
+    if quantidade_concluida > quantidade_total:
+        raise ValueError("A quantidade concluída não pode superar o total.")
+
+    return quantidade_total - quantidade_concluida

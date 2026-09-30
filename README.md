@@ -8,6 +8,8 @@ Calcula o tempo da aula total com a revisão considerando todas microaulas do me
 
 Verifica se o tempo necessário para uma atividade cabe no tempo disponível. A função aceita tempos iguais a zero e rejeita valores negativos, retornando verdadeiro quando há tempo suficiente e falso quando não há.
 
+Calcula quantas microaulas estão pendentes a partir do total e da quantidade concluída informados. Aceita zero pendências e rejeita quantidades inválidas.
+
 Os testes automatizados verificam cálculos válidos e a rejeição dessas entradas inválidas.
 
 ## Como executar os testes
