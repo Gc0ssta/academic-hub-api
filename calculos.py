@@ -55,3 +55,19 @@ def calcular_microaulas_pendentes(quantidade_total, quantidade_concluida):
         raise ValueError("A quantidade concluída não pode superar o total.")
 
     return quantidade_total - quantidade_concluida
+
+def calcular_tempo_restante_aula(
+    duracao_microaula,
+    quantidade_total,
+    quantidade_concluida,
+    velocidade,
+    tempo_revisao_pendente,
+):
+    if tempo_revisao_pendente < 0:
+        raise ValueError("tempo de revisao pendente nao pode ser um numero negativo")
+
+    microaulas_pendentes = calcular_microaulas_pendentes(quantidade_total, quantidade_concluida)
+
+    duracao_microaulas = calcular_tempo_video(duracao_microaula, velocidade)
+
+    return (microaulas_pendentes * duracao_microaulas) + tempo_revisao_pendente

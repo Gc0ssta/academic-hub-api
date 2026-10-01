@@ -1,6 +1,6 @@
 import pytest
 
-from calculos import calcular_tempo_video, calcular_tempo_aula, cabe_no_tempo, calcular_microaulas_pendentes
+from calculos import calcular_tempo_video, calcular_tempo_aula, cabe_no_tempo, calcular_microaulas_pendentes, calcular_tempo_restante_aula
 
 def test_calcular_tempo_video_em_velocidade_1_5():
     assert calcular_tempo_video(30, 1.5) == 20
@@ -131,3 +131,23 @@ def test_calcular_microaulas_pendentes_concluidas_nao_pode_ser_negativo():
 def test_calcular_microaulas_pendentes_concluidas_nao_pode_ser_maior_que_total():
     with pytest.raises(ValueError): 
         calcular_microaulas_pendentes(5, 6)
+
+def test_aula_parcialmente_concluida_cabe_em_60_minutos():
+    microaulas_pendentes = calcular_microaulas_pendentes(5, 2)
+    tempo_necessario = calcular_tempo_aula(30, microaulas_pendentes, 2, 10)
+
+    assert cabe_no_tempo(tempo_necessario, 60) is True
+
+def test_tempo_restante_com_aula_parcialmente_concluida():
+    assert calcular_tempo_restante_aula(30,5,2,2,10) == 55
+
+def test_tempo_restante_com_apenas_revisao_pendente():
+    assert calcular_tempo_restante_aula(30,5,5,2,10) == 10
+
+def test_tempo_restante_com_aula_e_revisao_concluidas():
+    assert calcular_tempo_restante_aula(30,5,5,2,0) == 0
+
+def test_tempo_restante_aula_com_revisao_negativa():
+    with pytest.raises(ValueError):
+        calcular_tempo_restante_aula(30, 5, 2, 2, -10)
+

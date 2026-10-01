@@ -10,6 +10,8 @@ Verifica se o tempo necessário para uma atividade cabe no tempo disponível. A 
 
 Calcula quantas microaulas estão pendentes a partir do total e da quantidade concluída informados. Aceita zero pendências e rejeita quantidades inválidas.
 
+Calcula o tempo restante da aula considerando as microaulas concluídas e o tempo de revisão pendente. Retorna apenas o tempo da revisão quando todos os vídeos foram concluídos, ou zero quando não há vídeos nem revisão pendentes. Rejeita tempo de revisão negativo.
+
 Os testes automatizados verificam cálculos válidos e a rejeição dessas entradas inválidas.
 
 ## Como executar os testes
