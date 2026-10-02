@@ -16,7 +16,7 @@ Os testes automatizados verificam cálculos válidos e a rejeição dessas entra
 
 ## Como usar o Academic Hub
 
-Atualmente, o Academic Hub funciona pelo terminal. O programa solicita informações sobre a aula e mostra quantas microaulas estão pendentes e o tempo restante, incluindo a revisão pendente.
+Atualmente, o Academic Hub funciona pelo terminal. O programa solicita informações sobre a aula e mostra quantas microaulas estão pendentes e o tempo restante, incluindo a revisão pendente. Também solicita o tempo disponpível para realizar as atividades e diz se cabe ou não cabe no tempo das atividades pendentes.
 
 Antes de executar pela primeira vez, crie o ambiente virtual conforme as instruções abaixo. Use ponto nos valores decimais, como 1.5 para a velocidade.
 
