@@ -14,6 +14,16 @@ Calcula o tempo restante da aula considerando as microaulas concluídas e o temp
 
 Os testes automatizados verificam cálculos válidos e a rejeição dessas entradas inválidas.
 
+## Como usar o Academic Hub
+
+Atualmente, o Academic Hub funciona pelo terminal. O programa solicita informações sobre a aula e mostra quantas microaulas estão pendentes e o tempo restante, incluindo a revisão pendente.
+
+Antes de executar pela primeira vez, crie o ambiente virtual conforme as instruções abaixo. Use ponto nos valores decimais, como 1.5 para a velocidade.
+
+```powershell
+.\.venv\Scripts\python.exe main.py
+```
+
 ## Como executar os testes
 
 Projeto testado com Python 3.12.0. Os comandos abaixo são para
