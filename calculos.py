@@ -1,4 +1,8 @@
-def calcular_tempo_video(duracao_minutos, velocidade):
+def calcular_tempo_video(
+    duracao_minutos: float, 
+    velocidade: float
+) -> float:
+
     if velocidade <= 0:
         raise ValueError("A velocidade deve ser maior que zero.")
 
@@ -7,7 +11,12 @@ def calcular_tempo_video(duracao_minutos, velocidade):
     
     return duracao_minutos / velocidade
 
-def calcular_tempo_aula(duracao_microaula, quantidade_microaulas, velocidade, tempo_revisao):
+def calcular_tempo_aula(
+    duracao_microaula: float, 
+    quantidade_microaulas: int, 
+    velocidade: float, 
+    tempo_revisao: float
+) -> float:
     """Calcula o tempo da aula em minutos, incluindo a revisão.
 
     Considera microaulas com a mesma duração e velocidade.
@@ -30,7 +39,10 @@ def calcular_tempo_aula(duracao_microaula, quantidade_microaulas, velocidade, te
 
     return aula_revisao
 
-def cabe_no_tempo(tempo_necessario, tempo_disponivel):
+def cabe_no_tempo(
+    tempo_necessario: float, 
+    tempo_disponivel: float
+) -> bool:
 
     if tempo_necessario < 0:
         raise ValueError("O tempo necessario não pode ser um número negativo")
@@ -40,7 +52,10 @@ def cabe_no_tempo(tempo_necessario, tempo_disponivel):
 
     return tempo_disponivel >= tempo_necessario
 
-def calcular_microaulas_pendentes(quantidade_total, quantidade_concluida):
+def calcular_microaulas_pendentes(
+    quantidade_total: int, 
+    quantidade_concluida: int
+) -> int:
 
     if type(quantidade_total) is not int or type(quantidade_concluida) is not int:
         raise TypeError("A quantidade de micro aulas precisa ser numeros inteiros")
@@ -57,12 +72,12 @@ def calcular_microaulas_pendentes(quantidade_total, quantidade_concluida):
     return quantidade_total - quantidade_concluida
 
 def calcular_tempo_restante_aula(
-    duracao_microaula,
-    quantidade_total,
-    quantidade_concluida,
-    velocidade,
-    tempo_revisao_pendente,
-):
+    duracao_microaula: float,
+    quantidade_total: int,
+    quantidade_concluida: int,
+    velocidade: float,
+    tempo_revisao_pendente: float,
+) -> float:
     if tempo_revisao_pendente < 0:
         raise ValueError("tempo de revisao pendente nao pode ser um numero negativo")
 
