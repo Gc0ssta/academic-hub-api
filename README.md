@@ -40,6 +40,6 @@ python -m venv .venv
 Para executar os testes:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest test_calculos.py -v
+.\.venv\Scripts\python.exe -m pytest -v
 ```
 O relatório mostra o resultado de cada teste. Todos devem passar.
