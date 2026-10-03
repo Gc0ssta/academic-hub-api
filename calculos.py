@@ -86,3 +86,25 @@ def calcular_tempo_restante_aula(
     duracao_microaulas = calcular_tempo_video(duracao_microaula, velocidade)
 
     return (microaulas_pendentes * duracao_microaulas) + tempo_revisao_pendente
+
+def calcular_tempo_microaulas_pendentes(
+    microaulas: list[dict],
+    velocidade: float,
+) -> float:
+    """Calcula com a lista recebida o tempo de microaulas pendentes com a velocidade escolhida, não inclui revisão.
+    """
+    if velocidade <= 0:
+        raise ValueError("A velocidade deve ser maior que zero.")
+
+    tempo_total = 0.0
+
+    for microaula in microaulas:
+
+        if type(microaula["concluida"]) is not bool:
+            raise TypeError("A microaula precisa ser True ou False no formato bool")
+
+        if microaula["concluida"] is False:
+
+            tempo_total += calcular_tempo_video(microaula["duracao_minutos"], velocidade)
+
+    return tempo_total

@@ -1,6 +1,6 @@
 import pytest
 
-from calculos import calcular_tempo_video, calcular_tempo_aula, cabe_no_tempo, calcular_microaulas_pendentes, calcular_tempo_restante_aula
+from calculos import calcular_tempo_video, calcular_tempo_aula, cabe_no_tempo, calcular_microaulas_pendentes, calcular_tempo_restante_aula, calcular_tempo_microaulas_pendentes
 
 def test_calcular_tempo_video_em_velocidade_1_5():
     assert calcular_tempo_video(30, 1.5) == 20
@@ -151,3 +151,119 @@ def test_tempo_restante_aula_com_revisao_negativa():
     with pytest.raises(ValueError):
         calcular_tempo_restante_aula(30, 5, 2, 2, -10)
 
+def test_calcular_tempo_microaulas_pendentes_parte_1_concluida_parte_2_nao_concluida():
+    microaulas = [
+        {
+            "titulo": "Parte 1",
+            "duracao_minutos": 29,
+            "concluida": True,
+        },
+        {
+            "titulo": "Parte 2",
+            "duracao_minutos": 26,
+            "concluida": False,
+        },
+    ]
+    
+    assert calcular_tempo_microaulas_pendentes(microaulas, 2) == 13.0
+
+def test_calcular_tempo_microaulas_pendentes_parte_1_e_parte_2_nao_concluidas():
+    microaulas = [
+        {
+            "titulo": "Parte 1",
+            "duracao_minutos": 29,
+            "concluida": False,
+        },
+        {
+            "titulo": "Parte 2",
+            "duracao_minutos": 26,
+            "concluida": False,
+        },
+    ]
+    
+    assert calcular_tempo_microaulas_pendentes(microaulas, 2) == 27.5
+
+def test_calcular_tempo_microaulas_pendentes_parte_1_e_parte_2_concluidas():
+    microaulas = [
+        {
+            "titulo": "Parte 1",
+            "duracao_minutos": 29,
+            "concluida": True,
+        },
+        {
+            "titulo": "Parte 2",
+            "duracao_minutos": 26,
+            "concluida": True,
+        },
+    ]
+   
+    assert calcular_tempo_microaulas_pendentes(microaulas, 2) == 0.0
+
+
+def test_calcular_tempo_microaulas_pendentes_com_velocidade_0():
+    microaulas = [
+        {
+            "titulo": "Parte 1",
+            "duracao_minutos": 29,
+            "concluida": True,
+        },
+        {
+            "titulo": "Parte 2",
+            "duracao_minutos": 26,
+            "concluida": True,
+        },
+    ]
+
+    with pytest.raises(ValueError):
+        calcular_tempo_microaulas_pendentes(microaulas, 0)
+
+def test_calcular_tempo_microaulas_pendentes_com_velocidade_negativa():
+    microaulas = [
+        {
+            "titulo": "Parte 1",
+            "duracao_minutos": 29,
+            "concluida": True,
+        },
+        {
+            "titulo": "Parte 2",
+            "duracao_minutos": 26,
+            "concluida": True,
+        },
+    ]
+
+    with pytest.raises(ValueError):
+        calcular_tempo_microaulas_pendentes(microaulas, -1)
+
+def test_calcular_tempo_microaulas_pendentes_com_false_no_tipo_string():
+    microaulas = [
+        {
+            "titulo": "Parte 1",
+            "duracao_minutos": 29,
+            "concluida": "False",
+        },
+        {
+            "titulo": "Parte 2",
+            "duracao_minutos": 26,
+            "concluida": True,
+        },
+    ]
+
+    with pytest.raises(TypeError):
+        calcular_tempo_microaulas_pendentes(microaulas, 2)
+
+def test_calcular_tempo_microaulas_pendentes_com_0_no_concluido():
+    microaulas = [
+        {
+            "titulo": "Parte 1",
+            "duracao_minutos": 29,
+            "concluida": 0,
+        },
+        {
+            "titulo": "Parte 2",
+            "duracao_minutos": 26,
+            "concluida": True,
+        },
+    ]
+
+    with pytest.raises(TypeError):
+        calcular_tempo_microaulas_pendentes(microaulas, 2)
