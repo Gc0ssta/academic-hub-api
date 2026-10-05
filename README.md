@@ -12,7 +12,9 @@ Calcula quantas microaulas estão pendentes a partir do total e da quantidade co
 
 Calcula o tempo restante da aula considerando as microaulas concluídas e o tempo de revisão pendente. Retorna apenas o tempo da revisão quando todos os vídeos foram concluídos, ou zero quando não há vídeos nem revisão pendentes. Rejeita tempo de revisão negativo.
 
-Calcula o tempo necessário para assistir às microaulas pendentes, considerando a duração individual de cada uma e a velocidade escolhida. Esse cálculo ainda não está integrado à interface do terminal.
+Calcula o tempo necessário para assistir às microaulas pendentes, considerando a duração individual de cada vídeo e a velocidade escolhida. Esse cálculo não inclui revisão.
+Também calcula o tempo pendente de várias aulas, somando os vídeos pendentes e a revisão de cada aula, com uma velocidade comum para os vídeos.
+Esses cálculos ainda não estão integrados à interface do terminal.
 
 Os testes automatizados verificam cálculos válidos e a rejeição dessas entradas inválidas.
 

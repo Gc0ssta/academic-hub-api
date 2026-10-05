@@ -108,3 +108,33 @@ def calcular_tempo_microaulas_pendentes(
             tempo_total += calcular_tempo_video(microaula["duracao_minutos"], velocidade)
 
     return tempo_total
+
+def calcular_tempo_total_pendente(
+    aulas: list[dict],
+    velocidade: float,
+) -> float:
+    """Calcula com a lista recebida tempos de aula e revisao pendentes em minutos usando uma velocidade comum. Lista vazia retorna zero.
+        """
+    if velocidade <= 0:
+        raise ValueError("A velocidade deve ser maior que zero.")
+
+    tempo_total = 0.0
+
+    for aula in aulas:
+
+        tempo_revisao = aula["tempo_revisao_pendente"]
+
+        if tempo_revisao < 0:
+            raise ValueError("O tempo de revisão pendente não pode ser negativo.")
+
+        microaulas_da_aula = aula["microaulas"]
+
+        tempo_videos = calcular_tempo_microaulas_pendentes(
+            microaulas_da_aula,
+            velocidade,
+        )
+
+        tempo_total += tempo_videos + tempo_revisao
+
+    return tempo_total
+    

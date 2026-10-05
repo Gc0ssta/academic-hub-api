@@ -1,6 +1,6 @@
 import pytest
 
-from calculos import calcular_tempo_video, calcular_tempo_aula, cabe_no_tempo, calcular_microaulas_pendentes, calcular_tempo_restante_aula, calcular_tempo_microaulas_pendentes
+from calculos import calcular_tempo_video, calcular_tempo_aula, cabe_no_tempo, calcular_microaulas_pendentes, calcular_tempo_restante_aula, calcular_tempo_microaulas_pendentes, calcular_tempo_total_pendente
 
 def test_calcular_tempo_video_em_velocidade_1_5():
     assert calcular_tempo_video(30, 1.5) == 20
@@ -267,3 +267,157 @@ def test_calcular_tempo_microaulas_pendentes_com_0_no_concluido():
 
     with pytest.raises(TypeError):
         calcular_tempo_microaulas_pendentes(microaulas, 2)
+
+def test_tempo_pendente_da_aula_com_revisao():
+
+    aula = {
+        "disciplina": "Banco de Dados",
+        "titulo": "Aula 1",
+        "microaulas": [
+            {
+                "titulo": "Parte 1",
+                "duracao_minutos": 29,
+                "concluida": True,
+            },
+            {
+                "titulo": "Parte 2",
+                "duracao_minutos": 26,
+                "concluida": False,
+            },
+        ],
+        "tempo_revisao_pendente": 10,
+    }
+
+    tempo_videos = calcular_tempo_microaulas_pendentes(aula["microaulas"],2)
+
+    assert tempo_videos + aula["tempo_revisao_pendente"] == 23
+
+def test_calcular_tempo_total_pendente_com_duas_aulas():
+
+    aulas = [
+        {
+            "disciplina": "Banco de Dados",
+            "titulo": "Aula 1",
+            "microaulas": [
+                {
+                    "titulo": "Parte 1",
+                    "duracao_minutos": 29,
+                    "concluida": True,
+                },
+                {
+                    "titulo": "Parte 2",
+                    "duracao_minutos": 26,
+                    "concluida": False,
+                },
+            ],
+            "tempo_revisao_pendente": 10,
+        },
+        {
+            "disciplina": "Banco de Dados",
+            "titulo": "Aula 2",
+            "microaulas": [
+                {
+                    "titulo": "Parte 2",
+                    "duracao_minutos": 40,
+                    "concluida": False,
+                },
+            ],
+            "tempo_revisao_pendente": 10,
+        },
+    ]
+
+    assert calcular_tempo_total_pendente(aulas, 2) == 53
+
+def test_calcular_tempo_total_pendente_com_duas_aulas_aula_1_com_todas_aulas_concluidas_com_apenas_revisao_pendente():
+
+    aulas = [
+        {
+            "disciplina": "Banco de Dados",
+            "titulo": "Aula 1",
+            "microaulas": [
+                {
+                    "titulo": "Parte 1",
+                    "duracao_minutos": 29,
+                    "concluida": True,
+                },
+                {
+                    "titulo": "Parte 2",
+                    "duracao_minutos": 26,
+                    "concluida": True,
+                },
+            ],
+            "tempo_revisao_pendente": 10,
+        },
+        {
+            "disciplina": "Banco de Dados",
+            "titulo": "Aula 2",
+            "microaulas": [
+                {
+                    "titulo": "Parte 2",
+                    "duracao_minutos": 40,
+                    "concluida": False,
+                },
+            ],
+            "tempo_revisao_pendente": 10,
+        },
+    ]
+
+    assert calcular_tempo_total_pendente(aulas, 2) == 40
+
+def test_calcular_tempo_total_pendente_com_lista_vazia_velocidade_2():
+
+    aulas = []
+
+    assert calcular_tempo_total_pendente(aulas, 2) == 0
+
+def test_calcular_tempo_total_pendente_com_lista_vazia_velocidade_0():
+
+    aulas = []
+
+    with pytest.raises(ValueError):
+        calcular_tempo_total_pendente(aulas, 0)
+
+def test_calcular_tempo_total_pendente_com_lista_vazia_velocidade_negativa():
+
+    aulas = []
+
+    with pytest.raises(ValueError):
+        calcular_tempo_total_pendente(aulas, -1)
+
+def test_calcular_tempo_total_pendente_com_tempo_revisao_negativo():
+
+    aulas = [
+        {
+            "disciplina": "Banco de Dados",
+            "titulo": "Aula 1",
+            "microaulas": [
+                {
+                    "titulo": "Parte 1",
+                    "duracao_minutos": 29,
+                    "concluida": True,
+                },
+                {
+                    "titulo": "Parte 2",
+                    "duracao_minutos": 26,
+                    "concluida": True,
+                },
+            ],
+            "tempo_revisao_pendente": -10,
+        },
+        {
+            "disciplina": "Banco de Dados",
+            "titulo": "Aula 2",
+            "microaulas": [
+                {
+                    "titulo": "Parte 2",
+                    "duracao_minutos": 40,
+                    "concluida": False,
+                },
+            ],
+            "tempo_revisao_pendente": 10,
+        },
+    ]
+
+    with pytest.raises(ValueError):
+        calcular_tempo_total_pendente(aulas, 2)
+
