@@ -14,13 +14,12 @@ Calcula o tempo restante da aula considerando as microaulas concluídas e o temp
 
 Calcula o tempo necessário para assistir às microaulas pendentes, considerando a duração individual de cada vídeo e a velocidade escolhida. Esse cálculo não inclui revisão.
 Também calcula o tempo pendente de várias aulas, somando os vídeos pendentes e a revisão de cada aula, com uma velocidade comum para os vídeos.
-Esses cálculos ainda não estão integrados à interface do terminal.
 
 Os testes automatizados verificam cálculos válidos e a rejeição dessas entradas inválidas.
 
 ## Como usar o Academic Hub
 
-Atualmente, o Academic Hub funciona pelo terminal. O programa solicita informações sobre a aula e mostra quantas microaulas estão pendentes e o tempo restante, incluindo a revisão pendente. Também solicita o tempo disponpível para realizar as atividades e diz se cabe ou não cabe no tempo das atividades pendentes.
+Atualmente, o Academic Hub funciona pelo terminal. O programa permite informar várias aulas, com a duração e o estado de conclusão de cada microaula e o tempo de revisão pendente de cada aula. Calcula o tempo dos vídeos ainda não concluídos na velocidade escolhida, soma as revisões pendentes e informa se o total cabe no tempo disponível.
 
 Antes de executar pela primeira vez, crie o ambiente virtual conforme as instruções abaixo. Use ponto nos valores decimais, como 1.5 para a velocidade.
 
