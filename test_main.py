@@ -5,7 +5,10 @@ from main import main, ler_microaula
 import pytest
 
 
-def test_terminal_informa_que_atividades_cabem(monkeypatch, capsys):
+def test_terminal_informa_que_atividades_cabem(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
     entradas = StringIO(
         "1\n"
         "Banco de Dados\nAula 1\n2\n"
@@ -22,7 +25,10 @@ def test_terminal_informa_que_atividades_cabem(monkeypatch, capsys):
     assert "Tempo restante: 23.0 minutos" in saida
     assert "As atividades pendentes cabem no tempo disponível." in saida
 
-def test_terminal_informa_que_atividades_nao_cabem(monkeypatch, capsys):
+def test_terminal_informa_que_atividades_nao_cabem(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
     entradas = StringIO(
         "1\n"
         "Banco de Dados\nAula 1\n2\n"
@@ -39,7 +45,10 @@ def test_terminal_informa_que_atividades_nao_cabem(monkeypatch, capsys):
     assert "Tempo restante: 23.0 minutos" in saida
     assert "As atividades pendentes não cabem no tempo disponível." in saida
 
-def test_terminal_rejeita_quantidade_de_aulas_zero(monkeypatch, capsys):
+def test_terminal_rejeita_quantidade_de_aulas_zero(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
     entradas = StringIO("0\n")
     monkeypatch.setattr("sys.stdin", entradas)
 
@@ -91,7 +100,10 @@ def test_ler_microaula_com_concluida_talvez(monkeypatch):
     with pytest.raises(ValueError):
         ler_microaula()
 
-def test_terminal_calcula_tempo_pendente_de_duas_aulas(monkeypatch, capsys):
+def test_terminal_calcula_tempo_pendente_de_duas_aulas(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
     entradas = StringIO(
         "2\n"
         "Banco de Dados\nAula 1\n1\n"
@@ -110,4 +122,34 @@ def test_terminal_calcula_tempo_pendente_de_duas_aulas(monkeypatch, capsys):
    
     assert "Tempo restante: 48.0 minutos" in saida
     assert "As atividades pendentes cabem no tempo disponível." in saida
-    
+
+def test_terminal_reutiliza_aulas_salvas(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
+    entradas = StringIO(
+        "1\n"
+        "Banco de Dados\nAula 1\n2\n"
+        "Parte 1\n29\ns\n"
+        "Parte 2\n26\nn\n"
+        "10\n2\n30\n"
+    )
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    main()
+
+    saida = capsys.readouterr().out
+
+    assert "Tempo restante: 23.0 minutos" in saida
+    assert "As atividades pendentes cabem no tempo disponível." in saida
+
+    novas_entradas = StringIO("1\n60\n")
+    monkeypatch.setattr("sys.stdin", novas_entradas)
+
+    main()
+
+    nova_saida = capsys.readouterr().out
+
+    assert "Quantas aulas deseja informar?" not in nova_saida
+    assert "Tempo restante: 36.0 minutos" in nova_saida
+    assert "As atividades pendentes cabem no tempo disponível." in nova_saida

@@ -1,5 +1,7 @@
 from calculos import calcular_tempo_total_pendente, cabe_no_tempo
 
+from armazenamento import carregar_aulas, salvar_aulas
+
 def ler_microaula() -> dict:
 
     titulo = str(input("qual o titulo da microaula? "))
@@ -55,23 +57,26 @@ def ler_aula() -> dict:
 
 def main() -> None:
     try:
-        quantidade_aulas = int(input("Quantas aulas deseja informar? "))
-        if quantidade_aulas <= 0:
-            raise ValueError("A quantidade de aulas deve ser maior que zero.")
+        aulas = carregar_aulas("aulas.json")
 
-        aulas = []
+        if not aulas:
+            quantidade_aulas = int(input("Quantas aulas deseja informar? "))
+            if quantidade_aulas <= 0:
+                raise ValueError("A quantidade de aulas deve ser maior que zero.")
 
-        for _ in range(quantidade_aulas):
-            aula = ler_aula()
-            aulas.append(aula)
+            for _ in range(quantidade_aulas):
+                aula = ler_aula()
+                aulas.append(aula)
 
         velocidade_videos = float(input("Qual velocidade dos videos? "))
         tempo_disponivel = float(input("Quantos minutos você tem disponíveis? "))
 
         tempo_restante = calcular_tempo_total_pendente(aulas, velocidade_videos)
         atividade_cabe = cabe_no_tempo(tempo_restante, tempo_disponivel)
+
+        salvar_aulas(aulas, "aulas.json")
         
-    except ValueError as erro:
+    except (ValueError, OSError) as erro:
         print("Não foi possível calcular:", erro)
     else:
         print("Tempo restante:", tempo_restante, "minutos")
