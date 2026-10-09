@@ -2,26 +2,24 @@
 
 O Academic Hub é um projeto em desenvolvimento que tem como objetivo ajudar na organização da rotina acadêmica de forma flexível tornando o dia a dia do estudante mais organizado e previsível.
 
-Atualmente, o projeto calcula o tempo de reprodução de vídeos conforme a velocidade escolhida. A função valida a duração e a velocidade, rejeitando valores iguais ou inferiores a zero. 
+## Funcionalidades
 
-Calcula o tempo da aula total com a revisão considerando todas microaulas do mesmo tempo e velocidade. A função valida quantidade de microaulas e permite revisão de zero minutos.
-
-Verifica se o tempo necessário para uma atividade cabe no tempo disponível. A função aceita tempos iguais a zero e rejeita valores negativos, retornando verdadeiro quando há tempo suficiente e falso quando não há.
-
-Calcula quantas microaulas estão pendentes a partir do total e da quantidade concluída informados. Aceita zero pendências e rejeita quantidades inválidas.
-
-Calcula o tempo restante da aula considerando as microaulas concluídas e o tempo de revisão pendente. Retorna apenas o tempo da revisão quando todos os vídeos foram concluídos, ou zero quando não há vídeos nem revisão pendentes. Rejeita tempo de revisão negativo.
-
-Calcula o tempo necessário para assistir às microaulas pendentes, considerando a duração individual de cada vídeo e a velocidade escolhida. Esse cálculo não inclui revisão.
-Também calcula o tempo pendente de várias aulas, somando os vídeos pendentes e a revisão de cada aula, com uma velocidade comum para os vídeos.
-
-Os testes automatizados verificam cálculos válidos e a rejeição dessas entradas inválidas.
+- Informar aulas e microaulas, com a duração individual e o estado de conclusão de cada vídeo.
+- Calcular o tempo total pendente, considerando a velocidade dos vídeos e as revisões de cada aula.
+- Comparar o tempo necessário com o tempo disponível, informando se as atividades cabem nesse período.
+- Salvar as informações das aulas e microaulas em JSON e recuperá-las nas próximas execuções.
 
 ## Como usar o Academic Hub
 
-Atualmente, o Academic Hub funciona pelo terminal. O programa permite informar várias aulas, com a duração e o estado de conclusão de cada microaula e o tempo de revisão pendente de cada aula. Calcula o tempo dos vídeos ainda não concluídos na velocidade escolhida, soma as revisões pendentes e informa se o total cabe no tempo disponível.
+O Academic Hub funciona pelo terminal. Execute os comandos na pasta do projeto, onde o programa procura e salva o arquivo `aulas.json`.
 
-Antes de executar pela primeira vez, crie o ambiente virtual conforme as instruções abaixo. Use ponto nos valores decimais, como 1.5 para a velocidade.
+No primeiro uso, sem aulas salvas, o programa solicita o cadastro. Após um cálculo bem-sucedido, salva as informações em `aulas.json`.
+
+Nas próximas execuções, recupera as aulas salvas e pergunta apenas a velocidade dos vídeos e o tempo disponível.
+
+Ainda não é possível editar o cadastro ou marcar novas conclusões pelo terminal.
+
+Antes de executar pela primeira vez, crie o ambiente virtual conforme as instruções abaixo. Use ponto nos valores decimais, como `1.5` para a velocidade.
 
 ```powershell
 .\.venv\Scripts\python.exe main.py
