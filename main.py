@@ -2,6 +2,8 @@ from calculos import calcular_tempo_total_pendente, cabe_no_tempo
 
 from armazenamento import carregar_aulas, salvar_aulas
 
+from progresso import marcar_microaula_concluida
+
 def ler_microaula() -> dict:
 
     titulo = str(input("qual o titulo da microaula? "))
@@ -55,6 +57,31 @@ def ler_aula() -> dict:
 
     return aula
 
+def selecionar_aula(aulas: list[dict]) -> dict:
+    for numero, aula in enumerate(aulas, start=1):
+        print(numero, "-", aula["disciplina"], "-", aula["titulo"])
+
+    numero_escolhido = int(input("Qual aula deseja selecionar? "))
+
+    if numero_escolhido < 1 or numero_escolhido > len(aulas):
+        raise ValueError("Nao existe aulas relacionadas com esse valor")
+
+    return aulas[numero_escolhido - 1]
+
+def selecionar_indice_microaula(aula: dict) -> int:
+    
+    microaulas = aula["microaulas"]
+
+    for numero, microaula in enumerate(microaulas, start=1):
+        print(numero, "-", microaula["titulo"])
+
+    numero_escolhido = int(input("Qual microaula deseja selecionar? "))
+
+    if numero_escolhido < 1 or numero_escolhido > len(microaulas):
+        raise ValueError("Não existe microaula com esse número.")
+
+    return numero_escolhido - 1
+
 def main() -> None:
     try:
         aulas = carregar_aulas("aulas.json")
@@ -67,6 +94,16 @@ def main() -> None:
             for _ in range(quantidade_aulas):
                 aula = ler_aula()
                 aulas.append(aula)
+
+        resposta_conclusao = input("Deseja marcar uma microaula como concluída? (s/n): ").lower()
+
+        if resposta_conclusao != "s" and resposta_conclusao != "n":
+            raise ValueError("Voce nao digitou um valor valido")
+
+        if resposta_conclusao == "s":
+            aula_selecionada = selecionar_aula(aulas)
+            indice = selecionar_indice_microaula(aula_selecionada)
+            marcar_microaula_concluida(aula_selecionada, indice)
 
         velocidade_videos = float(input("Qual velocidade dos videos? "))
         tempo_disponivel = float(input("Quantos minutos você tem disponíveis? "))
