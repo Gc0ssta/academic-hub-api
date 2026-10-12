@@ -1,4 +1,4 @@
-from progresso import marcar_microaula_concluida
+from progresso import marcar_microaula_concluida, marcar_revisao_concluida
 
 import pytest
 
@@ -105,4 +105,55 @@ def test_rejeita_indice_decimal():
         marcar_microaula_concluida(aulas, 1.5)
 
     assert aulas["microaulas"][0]["concluida"] is False
+    assert aulas["microaulas"][1]["concluida"] is False
+
+def test_concluir_revisao_permitida():
+    aulas = {
+            "disciplina": "Banco de Dados",
+            "titulo": "Aula 1",
+            "microaulas": [
+                {
+                    "titulo": "Parte 1",
+                    "duracao_minutos": 29,
+                    "concluida": True,
+                },
+                {
+                    "titulo": "Parte 2",
+                    "duracao_minutos": 26,
+                    "concluida": True,
+                },
+            ],
+            "tempo_revisao_pendente": 10,
+        }
+
+    marcar_revisao_concluida(aulas)
+
+    assert aulas["tempo_revisao_pendente"] == 0
+    assert aulas["microaulas"][0]["concluida"] is True
+    assert aulas["microaulas"][1]["concluida"] is True
+
+def test_concluir_revisao_bloqueada():
+    aulas = {
+            "disciplina": "Banco de Dados",
+            "titulo": "Aula 1",
+            "microaulas": [
+                {
+                    "titulo": "Parte 1",
+                    "duracao_minutos": 29,
+                    "concluida": True,
+                },
+                {
+                    "titulo": "Parte 2",
+                    "duracao_minutos": 26,
+                    "concluida": False,
+                },
+            ],
+            "tempo_revisao_pendente": 10,
+        }
+
+    with pytest.raises(ValueError):
+        marcar_revisao_concluida(aulas)
+
+    assert aulas["tempo_revisao_pendente"] == 10
+    assert aulas["microaulas"][0]["concluida"] is True
     assert aulas["microaulas"][1]["concluida"] is False

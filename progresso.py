@@ -10,3 +10,12 @@ def marcar_microaula_concluida(
         raise IndexError("Nao informou um indice valido")
     
     aula["microaulas"][indice_microaula]["concluida"] = True
+
+def marcar_revisao_concluida(aula: dict) -> None:
+
+    for microaula in aula["microaulas"]:
+        if microaula["concluida"] is False:
+            raise ValueError("Ainda ha videos pendentes a serem concluidos")
+
+    aula["tempo_revisao_pendente"] = 0
+
