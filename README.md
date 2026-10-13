@@ -1,32 +1,17 @@
 # Academic Hub
 
-O Academic Hub é um projeto em desenvolvimento que tem como objetivo ajudar na organização da rotina acadêmica de forma flexível tornando o dia a dia do estudante mais organizado e previsível.
+O Academic Hub é um projeto em desenvolvimento para acompanhar o progresso de aulas e revisões e estimar se as atividades pendentes cabem no tempo disponível. Atualmente, funciona pelo terminal, com armazenamento local em JSON.
 
 ## Funcionalidades
 
 - Informar aulas e microaulas, com a duração individual e o estado de conclusão de cada vídeo.
 - Selecionar uma aula e marcar uma de suas microaulas como concluída.
+- Concluir a revisão de uma aula quando todas as suas microaulas estiverem concluídas.
 - Calcular o tempo total pendente, considerando a velocidade dos vídeos e as revisões de cada aula.
 - Comparar o tempo necessário com o tempo disponível, informando se as atividades cabem nesse período.
 - Salvar as informações das aulas e microaulas em JSON e recuperá-las nas próximas execuções.
 
-## Como usar o Academic Hub
-
-O Academic Hub funciona pelo terminal. Execute os comandos na pasta do projeto, onde o programa procura e salva o arquivo `aulas.json`.
-
-No primeiro uso, sem aulas salvas, o programa solicita o cadastro. Após um cálculo bem-sucedido, salva as informações em `aulas.json`.
-
-Nas próximas execuções, o programa recupera as aulas salvas e oferece a opção de marcar uma microaula como concluída. Depois, solicita a velocidade dos vídeos e o tempo disponível. Após um cálculo bem-sucedido, salva o progresso atualizado.
-
-Ainda não é possível editar títulos e durações, desfazer conclusões ou concluir revisões pelo terminal.
-
-Antes de executar pela primeira vez, crie o ambiente virtual conforme as instruções abaixo. Use ponto nos valores decimais, como `1.5` para a velocidade.
-
-```powershell
-.\.venv\Scripts\python.exe main.py
-```
-
-## Como executar os testes
+## Preparação
 
 Projeto testado com Python 3.12.0. Os comandos abaixo são para
 Windows com PowerShell, executados a partir da pasta do projeto.
@@ -39,7 +24,27 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 ```
 
-Para executar os testes:
+## Como usar o Academic Hub
+
+O Academic Hub funciona pelo terminal. Execute os comandos na pasta do projeto, onde o programa procura e salva o arquivo `aulas.json`.
+
+No primeiro uso, sem aulas salvas, o programa solicita o cadastro. Após um cálculo bem-sucedido, salva as informações em `aulas.json`.
+
+Após cadastrar ou recuperar as aulas, o programa apresenta três opções: `0` para apenas calcular o tempo pendente, `1` para concluir uma microaula e `2` para concluir uma revisão. Quando a opção é aceita, solicita a velocidade dos vídeos e o tempo disponível. Após um cálculo bem-sucedido, salva o cadastro e o progresso em `aulas.json`.
+
+Para registrar outra conclusão, execute o programa novamente.
+
+Concluir todas as microaulas de uma aula não conclui a revisão automaticamente. A pessoa precisa selecionar essa ação.
+
+Ainda não é possível editar títulos e durações ou desfazer conclusões pelo terminal.
+
+Após concluir a preparação, execute o comando abaixo. Use ponto nos valores decimais, como `1.5` para a velocidade.
+
+```powershell
+.\.venv\Scripts\python.exe main.py
+```
+
+## Como executar os testes
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -v

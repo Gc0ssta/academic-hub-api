@@ -2,7 +2,7 @@ from calculos import calcular_tempo_total_pendente, cabe_no_tempo
 
 from armazenamento import carregar_aulas, salvar_aulas
 
-from progresso import marcar_microaula_concluida
+from progresso import marcar_microaula_concluida, marcar_revisao_concluida
 
 def ler_microaula() -> dict:
 
@@ -95,15 +95,23 @@ def main() -> None:
                 aula = ler_aula()
                 aulas.append(aula)
 
-        resposta_conclusao = input("Deseja marcar uma microaula como concluída? (s/n): ").lower()
+        print("0 - Apenas calcular o tempo pendente")
+        print("1 - Marcar uma microaula como concluída")
+        print("2 - Marcar uma revisão como concluída")
 
-        if resposta_conclusao != "s" and resposta_conclusao != "n":
+        opcao = input("Escolha uma opção: ")
+
+        if opcao != "0" and opcao != "1" and opcao != "2":
             raise ValueError("Voce nao digitou um valor valido")
 
-        if resposta_conclusao == "s":
+        if opcao == "1":
             aula_selecionada = selecionar_aula(aulas)
             indice = selecionar_indice_microaula(aula_selecionada)
             marcar_microaula_concluida(aula_selecionada, indice)
+
+        elif opcao == "2":
+            aula_selecionada = selecionar_aula(aulas)
+            marcar_revisao_concluida(aula_selecionada)
 
         velocidade_videos = float(input("Qual velocidade dos videos? "))
         tempo_disponivel = float(input("Quantos minutos você tem disponíveis? "))
