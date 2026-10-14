@@ -1,6 +1,15 @@
 import pytest
 
-from calculos import calcular_tempo_video, calcular_tempo_aula, cabe_no_tempo, calcular_microaulas_pendentes, calcular_tempo_restante_aula, calcular_tempo_microaulas_pendentes, calcular_tempo_total_pendente
+from calculos import (
+    calcular_tempo_video,
+    calcular_tempo_aula,
+    cabe_no_tempo,
+    calcular_microaulas_pendentes,
+    calcular_tempo_restante_aula,
+    calcular_tempo_microaulas_pendentes,
+    calcular_tempo_total_pendente,
+    calcular_tempo_disponivel_total,
+)
 
 def test_calcular_tempo_video_em_velocidade_1_5():
     assert calcular_tempo_video(30, 1.5) == 20
@@ -421,3 +430,15 @@ def test_calcular_tempo_total_pendente_com_tempo_revisao_negativo():
     with pytest.raises(ValueError):
         calcular_tempo_total_pendente(aulas, 2)
 
+def test_disponibilidade_total_com_dia_sem_tempo():
+    assert calcular_tempo_disponivel_total([60, 0, 120]) == 180
+
+def test_disponibilidade_total_lista_vazia():
+    assert calcular_tempo_disponivel_total([]) == 0
+
+def test_disponibilidade_total_com_decimais():
+    assert calcular_tempo_disponivel_total([30.5, 15.25]) == 45.75
+
+def test_disponibilidade_total_rejeita_negativo():
+    with pytest.raises(ValueError):
+        calcular_tempo_disponivel_total([60, -10, 120])

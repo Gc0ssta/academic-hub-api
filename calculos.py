@@ -137,4 +137,19 @@ def calcular_tempo_total_pendente(
         tempo_total += tempo_videos + tempo_revisao
 
     return tempo_total
+
+def calcular_tempo_disponivel_total(
+    disponibilidades_diarias: list[float],
+) -> float:
+
+    total = 0.0
+
+    for min_diario in disponibilidades_diarias:
+
+        if min_diario < 0:
+            raise ValueError("A disponibilidade diaria nao pode ser um numero negativo")
+
+        total += min_diario
+
+    return total
     
