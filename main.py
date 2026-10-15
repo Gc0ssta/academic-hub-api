@@ -1,4 +1,4 @@
-from calculos import calcular_tempo_total_pendente, cabe_no_tempo
+from calculos import calcular_tempo_total_pendente, cabe_no_tempo, calcular_tempo_disponivel_total
 
 from armazenamento import carregar_aulas, salvar_aulas
 
@@ -82,6 +82,21 @@ def selecionar_indice_microaula(aula: dict) -> int:
 
     return numero_escolhido - 1
 
+def ler_disponibilidades_diarias() -> list[float]:
+    quantos_dias = int(input("Quantos dias deseja considerar? "))
+    if quantos_dias <= 0:
+        raise ValueError("A quantidade de dias deve ser maior que zero.")
+
+    lista = []
+
+    for dia in range(1, quantos_dias + 1):
+        minutos = float(input(f"Quantos minutos estão disponíveis no dia {dia}? "))
+        if minutos < 0:
+            raise ValueError("Nao e possivel escolher uma numeracao negativa aqui")
+        lista.append(minutos)
+
+    return lista
+
 def main() -> None:
     try:
         aulas = carregar_aulas("aulas.json")
@@ -114,7 +129,8 @@ def main() -> None:
             marcar_revisao_concluida(aula_selecionada)
 
         velocidade_videos = float(input("Qual velocidade dos videos? "))
-        tempo_disponivel = float(input("Quantos minutos você tem disponíveis? "))
+        disponibilidades = ler_disponibilidades_diarias()
+        tempo_disponivel = calcular_tempo_disponivel_total(disponibilidades)
 
         tempo_restante = calcular_tempo_total_pendente(aulas, velocidade_videos)
         atividade_cabe = cabe_no_tempo(tempo_restante, tempo_disponivel)
@@ -125,6 +141,8 @@ def main() -> None:
         print("Não foi possível calcular:", erro)
     else:
         print("Tempo restante:", tempo_restante, "minutos")
+        print("Tempo disponível no período:", tempo_disponivel, "minutos")
+        print("Esta comparação considera apenas o total de minutos, sem distribuir as atividades por dia.")
         
         if atividade_cabe:
             print("As atividades pendentes cabem no tempo disponível.")
