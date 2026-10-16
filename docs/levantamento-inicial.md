@@ -85,3 +85,19 @@ Antes de automatizar o cronograma, definir datas e conteúdos de um caso real, e
 Cálculos de notas dependem de confirmar pesos, critérios de aprovação e penalidades. O desconto de 20% mencionado no levantamento foi um exemplo, não uma regra validada.
 
 Notas, faltas, interface visual e disponibilização online ficam para etapas futuras. Importação de PDFs, geração de resumos com IA e integração com a universidade não fazem parte da primeira entrega.
+
+## 6. Evolução planejada — 15/10/2026
+
+Os comportamentos abaixo orientam as próximas etapas e ainda não estão implementados.
+
+- Configurar uma rotina semanal de disponibilidade, com minutos diferentes para cada dia da semana. O sistema deverá aplicar esse padrão às datas do período.
+- Permitir exceções por data, incluindo dias com zero minutos, sem alterar a rotina semanal padrão.
+- Permitir reservar parte da disponibilidade diária para exercícios ou outras atividades. Essa reserva faz parte do tempo disponível, sem acrescentar minutos ao dia.
+- Registrar as entregas de cada disciplina, seus prazos, as aulas necessárias e o tempo reservado para realizar os projetos.
+- Compartilhar a disponibilidade entre todas as disciplinas, evitando comprometer o mesmo tempo com atividades diferentes.
+- Recalcular as pendências futuras quando o usuário atualizar o progresso ou a disponibilidade. A passagem de um dia não significa que as atividades foram concluídas.
+- Informar quando não houver tempo suficiente para cumprir o planejamento, sem ultrapassar a disponibilidade nem aumentar automaticamente a velocidade dos vídeos.
+
+A distribuição deverá considerar os prazos de cada entrega. Ter minutos suficientes no total do período não garante que todas as atividades possam ser concluídas a tempo.
+
+Antes de implementar o agendamento, definir como dividir atividades entre dias, priorizar entregas e tratar conflitos entre reservas e prazos.
