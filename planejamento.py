@@ -18,3 +18,31 @@ def gerar_datas_periodo(
         data_atual += timedelta(days=1)
 
     return datas
+
+def gerar_disponibilidades_periodo(
+    data_inicio: date,
+    data_fim: date,
+    rotina_semanal: dict[int, float],
+) -> list[dict]:
+
+    for dia_semana in range(7):
+        if dia_semana not in rotina_semanal:
+            raise ValueError("A rotina semanal deve informar os sete dias.")
+
+        if rotina_semanal[dia_semana] < 0:
+            raise ValueError("A disponibilidade diária não pode ser negativa.")
+        
+    datas = gerar_datas_periodo(data_inicio, data_fim)
+    disponibilidades = []
+
+    for dia in datas:
+        dia_semana = dia.weekday()
+        minutos_disponiveis = rotina_semanal[dia_semana]
+            
+        disponibilidade = {
+            "data": dia,
+            "minutos_disponiveis": minutos_disponiveis,
+        }
+        disponibilidades.append(disponibilidade)
+
+    return disponibilidades
