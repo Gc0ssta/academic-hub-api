@@ -60,10 +60,11 @@ def test_gerar_disponibilidades_periodo_aplica_rotina_semanal():
     }
 
     resultado = gerar_disponibilidades_periodo(
-        data_inicio=date(2026, 10, 16),
-        data_fim=date(2026, 10, 18),
-        rotina_semanal=rotina_semanal,
-    )
+            data_inicio=date(2026, 10, 16),
+            data_fim=date(2026, 10, 18),
+            rotina_semanal=rotina_semanal,
+            excecoes={},
+        )
 
     assert resultado == [
         {"data": date(2026, 10, 16), "minutos_disponiveis": 30},
@@ -85,6 +86,7 @@ def test_gerar_disponibilidades_periodo_sem_domingo():
             data_inicio=date(2026, 10, 16),
             data_fim=date(2026, 10, 18),
             rotina_semanal=rotina_semanal,
+            excecoes={},
         )
 
 def test_gerar_disponibilidades_periodo_disponibilidade_negativa():
@@ -102,6 +104,7 @@ def test_gerar_disponibilidades_periodo_disponibilidade_negativa():
             data_inicio=date(2026, 10, 16),
             data_fim=date(2026, 10, 18),
             rotina_semanal=rotina_semanal,
+            excecoes={},
         )
 
 def test_gerar_disponibilidades_periodo_sem_sexta():
@@ -118,4 +121,73 @@ def test_gerar_disponibilidades_periodo_sem_sexta():
             data_inicio=date(2026, 10, 16),
             data_fim=date(2026, 10, 18),
             rotina_semanal=rotina_semanal,
+            excecoes={},
         )
+
+def test_gerar_disponibilidades_periodo_aplica_excecao_zero():
+    rotina_semanal = {
+        0: 60,
+        1: 60,
+        2: 60,
+        4: 60,
+        3: 60,
+        5: 120,
+        6: 120,
+    }
+
+    resultado = gerar_disponibilidades_periodo(
+        data_inicio=date(2026, 10, 17),
+        data_fim=date(2026, 10, 18),
+        rotina_semanal=rotina_semanal,
+        excecoes = {date(2026, 10, 17): 0,},
+    )
+
+    assert resultado == [
+        {"data": date(2026, 10, 17), "minutos_disponiveis": 0},
+        {"data": date(2026, 10, 18), "minutos_disponiveis": 120},
+    ]   
+
+    assert rotina_semanal[5] == 120
+
+def test_gerar_disponibilidades_periodo_rejeicao_disponibilidade_negativa():
+    rotina_semanal = {
+        0: 60,
+        1: 60,
+        2: 60,
+        4: 60,
+        3: 60,
+        5: 120,
+        6: 120,
+    }
+    with pytest.raises(ValueError):
+        gerar_disponibilidades_periodo(
+            data_inicio=date(2026, 10, 17),
+            data_fim=date(2026, 10, 18),
+            rotina_semanal=rotina_semanal,
+            excecoes = {date(2026, 10, 17): -10,},
+        )
+
+def test_gerar_disponibilidades_periodo_aplica_excecao_minutos():
+    rotina_semanal = {
+        0: 60,
+        1: 60,
+        2: 60,
+        4: 60,
+        3: 60,
+        5: 120,
+        6: 120,
+    }
+
+    resultado = gerar_disponibilidades_periodo(
+        data_inicio=date(2026, 10, 17),
+        data_fim=date(2026, 10, 18),
+        rotina_semanal=rotina_semanal,
+        excecoes = {date(2026, 10, 17): 30,},
+    )
+
+    assert resultado == [
+        {"data": date(2026, 10, 17), "minutos_disponiveis": 30},
+        {"data": date(2026, 10, 18), "minutos_disponiveis": 120},
+    ]   
+
+    assert rotina_semanal[5] == 120

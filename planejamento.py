@@ -23,6 +23,7 @@ def gerar_disponibilidades_periodo(
     data_inicio: date,
     data_fim: date,
     rotina_semanal: dict[int, float],
+    excecoes: dict[date, float],
 ) -> list[dict]:
 
     for dia_semana in range(7):
@@ -31,13 +32,21 @@ def gerar_disponibilidades_periodo(
 
         if rotina_semanal[dia_semana] < 0:
             raise ValueError("A disponibilidade diária não pode ser negativa.")
+
+    for data_excecao in excecoes:
+        if excecoes[data_excecao] < 0:
+            raise ValueError("A disponibilidade diária não pode ser negativa.")
         
     datas = gerar_datas_periodo(data_inicio, data_fim)
     disponibilidades = []
 
     for dia in datas:
         dia_semana = dia.weekday()
-        minutos_disponiveis = rotina_semanal[dia_semana]
+
+        if dia in excecoes:
+            minutos_disponiveis = excecoes[dia]
+        else:
+            minutos_disponiveis = rotina_semanal[dia_semana]
             
         disponibilidade = {
             "data": dia,
