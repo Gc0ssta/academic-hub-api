@@ -103,6 +103,29 @@ def ler_data(mensagem: str) -> date:
     data = date.fromisoformat(input(mensagem))
     return data
 
+def ler_rotina_semanal() -> dict[int, float]:
+    dias_semana = [
+        "segunda-feira", 
+        "terca-feira", 
+        "quarta-feira", 
+        "quinta-feira", 
+        "sexta-feira", 
+        "sabado", 
+        "domingo",
+    ]
+
+    rotina_semanal = {}
+
+    for numero_dia, nome_dia in enumerate(dias_semana):
+        minutos = float(input(f"Quantos minutos disponiveis para faculdade voce tem no dia de {nome_dia}? "))
+
+        if minutos < 0:
+            raise ValueError("O Valor escolhido nao pode ser numero negativo")
+
+        rotina_semanal[numero_dia] = minutos
+
+    return rotina_semanal
+
 def main() -> None:
     try:
         aulas = carregar_aulas("aulas.json")

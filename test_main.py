@@ -6,7 +6,8 @@ from main import (
     selecionar_aula, 
     selecionar_indice_microaula, 
     ler_disponibilidades_diarias,
-    ler_data
+    ler_data,
+    ler_rotina_semanal
 )
 
 from armazenamento import carregar_aulas
@@ -474,3 +475,35 @@ def test_ler_data_rejeita_texto_invalido(monkeypatch):
 
     with pytest.raises(ValueError):
         ler_data("Informe uma data (AAAA-MM-DD): ")
+
+def test_ler_rotina_semanal_aceita_zero_e_minutos_decimais(monkeypatch):
+    entradas = StringIO("60\n45\n80\n30.5\n90\n120\n0\n")
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    saida = ler_rotina_semanal()
+
+    assert saida == {
+                0: 60,
+                1: 45,
+                2: 80,
+                3: 30.5,
+                4: 90,
+                5: 120,
+                6: 0,
+            }
+
+def test_ler_rotina_semanal_rejeita_minutos_negativos(monkeypatch):
+
+    entradas = StringIO("60\n-10\n")
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    with pytest.raises(ValueError):
+        ler_rotina_semanal()
+
+def test_ler_rotina_semanal_rejeita_texto_invalido(monkeypatch):
+
+    entradas = StringIO("abc\n")
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    with pytest.raises(ValueError):
+        ler_rotina_semanal()
