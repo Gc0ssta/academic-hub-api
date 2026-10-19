@@ -4,6 +4,8 @@ from armazenamento import carregar_aulas, salvar_aulas
 
 from progresso import marcar_microaula_concluida, marcar_revisao_concluida
 
+from datetime import date
+
 def ler_microaula() -> dict:
 
     titulo = str(input("qual o titulo da microaula? "))
@@ -96,6 +98,10 @@ def ler_disponibilidades_diarias() -> list[float]:
         lista.append(minutos)
 
     return lista
+
+def ler_data(mensagem: str) -> date:
+    data = date.fromisoformat(input(mensagem))
+    return data
 
 def main() -> None:
     try:

@@ -5,13 +5,15 @@ from main import (
     ler_microaula, 
     selecionar_aula, 
     selecionar_indice_microaula, 
-    ler_disponibilidades_diarias
+    ler_disponibilidades_diarias,
+    ler_data
 )
 
 from armazenamento import carregar_aulas
 
 import pytest
 
+from datetime import date
 
 def test_terminal_informa_que_atividades_cabem(
     monkeypatch, capsys, tmp_path
@@ -447,3 +449,28 @@ def test_terminal_soma_disponibilidade_de_varios_dias(
     assert "Tempo restante: 23.0 minutos" in saida
     assert "As atividades pendentes cabem no tempo disponível." in saida
     assert "Tempo disponível no período: 30.0 minutos" in saida
+
+def test_ler_data_valida(monkeypatch):
+
+    entradas = StringIO("2026-10-18\n")
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    saida = ler_data("Informe uma data (AAAA-MM-DD): ")
+
+    assert saida == date(2026, 10, 18)
+
+def test_ler_data_rejeita_data_inexistente(monkeypatch):
+
+    entradas = StringIO("2026-02-30\n")
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    with pytest.raises(ValueError):
+        ler_data("Informe uma data (AAAA-MM-DD): ")
+
+def test_ler_data_rejeita_texto_invalido(monkeypatch):
+
+    entradas = StringIO("abc\n")
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    with pytest.raises(ValueError):
+        ler_data("Informe uma data (AAAA-MM-DD): ")
