@@ -7,7 +7,7 @@ O Academic Hub é um projeto em desenvolvimento para acompanhar o progresso de a
 - Informar aulas e microaulas, com a duração individual e o estado de conclusão de cada vídeo.
 - Selecionar uma aula e marcar uma de suas microaulas como concluída.
 - Concluir a revisão de uma aula quando todas as suas microaulas estiverem concluídas.
-- Informar a disponibilidade em minutos para cada dia de um período, incluindo dias com zero minutos disponíveis.
+- Informar os minutos disponíveis de segunda a domingo e aplicar essa rotina às datas do período escolhido, incluindo dias com zero minutos.
 - Calcular o tempo total pendente, considerando a velocidade dos vídeos e as revisões de cada aula.
 - Comparar o tempo necessário com o tempo disponível, informando se as atividades cabem nesse período.
 - Salvar as informações das aulas e microaulas em JSON e recuperá-las nas próximas execuções.
@@ -27,27 +27,29 @@ python -m venv .venv
 
 ## Como usar o Academic Hub
 
-O Academic Hub funciona pelo terminal. Execute os comandos na pasta do projeto, onde o programa procura e salva o arquivo `aulas.json`.
-
-No primeiro uso, sem aulas salvas, o programa solicita o cadastro. Após um cálculo bem-sucedido, salva as informações em `aulas.json`.
-
-Após cadastrar ou recuperar as aulas, o programa apresenta três opções: `0` para apenas calcular o tempo pendente, `1` para concluir uma microaula e `2` para concluir uma revisão. Quando a opção é aceita, solicita a velocidade, quantidade de dias e minutos disponíveis em cada dia. Após um cálculo bem-sucedido, salva o cadastro e o progresso em `aulas.json`.
-
-O programa compara o tempo pendente das atividades com a soma das disponibilidades. Ainda não distribui atividades por dia nem verifica prazos.
-
-As disponibilidades são informadas novamente a cada execução; o JSON continua salvando apenas as aulas e o progresso.
-
-Para registrar outra conclusão, execute o programa novamente.
-
-Concluir todas as microaulas de uma aula não conclui a revisão automaticamente. A pessoa precisa selecionar essa ação.
-
-Ainda não é possível editar títulos e durações ou desfazer conclusões pelo terminal.
-
-Após concluir a preparação, execute o comando abaixo. Use ponto nos valores decimais, como `1.5` para a velocidade.
+Após concluir a preparação, execute o programa na pasta do projeto:
 
 ```powershell
 .\.venv\Scripts\python.exe main.py
 ```
+
+No primeiro uso, sem aulas salvas, o programa solicita o cadastro das aulas e microaulas. Nas próximas execuções, recupera os dados do arquivo `aulas.json`.
+
+Após cadastrar ou recuperar as aulas, escolha uma opção:
+
+- `0`: apenas calcular o tempo pendente.
+- `1`: marcar uma microaula como concluída.
+- `2`: concluir a revisão de uma aula.
+
+Para concluir uma revisão, todas as microaulas daquela aula precisam estar concluídas. Finalizar os vídeos não conclui a revisão automaticamente.
+
+Em seguida, informe a velocidade dos vídeos, a data inicial, a data final e os minutos disponíveis em cada dia da semana, de segunda a domingo. Use datas no formato `AAAA-MM-DD` e ponto nos valores decimais, como `1.5` para a velocidade. Dias sem disponibilidade devem receber `0` minutos.
+
+O período inclui a data inicial e a final. O programa aplica a rotina semanal a cada data desse intervalo e compara a soma dos minutos disponíveis com o tempo pendente das atividades. Ainda não distribui atividades por dia nem verifica prazos de entrega.
+
+Após um cálculo bem-sucedido, o cadastro e o progresso são salvos em `aulas.json`, na pasta de execução. O período e a rotina semanal não são salvos e precisam ser informados novamente a cada execução.
+
+Para registrar outra conclusão, execute o programa novamente. Ainda não é possível editar títulos e durações ou desfazer conclusões pelo terminal.
 
 ## Como executar os testes
 

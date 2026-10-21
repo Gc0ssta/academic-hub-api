@@ -25,7 +25,18 @@ def test_terminal_informa_que_atividades_cabem(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n0\n2\n1\n30\n"
+        "10\n"          # Revisão pendente.
+        "0\n"           # Apenas calcular.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-10-19\n"  # Data inicial: segunda-feira.
+        "2026-10-19\n"  # Data final: o mesmo dia.
+        "30\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
     )
     monkeypatch.setattr("sys.stdin", entradas)
 
@@ -35,6 +46,7 @@ def test_terminal_informa_que_atividades_cabem(
 
     assert "Tempo restante: 23.0 minutos" in saida
     assert "As atividades pendentes cabem no tempo disponível." in saida
+    assert "Tempo disponível no período: 30.0 minutos" in saida
 
 def test_terminal_informa_que_atividades_nao_cabem(
     monkeypatch, capsys, tmp_path
@@ -45,8 +57,20 @@ def test_terminal_informa_que_atividades_nao_cabem(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n0\n2\n1\n20\n"
+        "10\n"          # Revisão pendente.
+        "0\n"           # Apenas calcular.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-10-19\n"  # Data inicial: segunda-feira.
+        "2026-10-19\n"  # Data final: o mesmo dia.
+        "20\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
     )
+    
     monkeypatch.setattr("sys.stdin", entradas)
 
     main()
@@ -55,6 +79,7 @@ def test_terminal_informa_que_atividades_nao_cabem(
 
     assert "Tempo restante: 23.0 minutos" in saida
     assert "As atividades pendentes não cabem no tempo disponível." in saida
+    assert "Tempo disponível no período: 20.0 minutos" in saida
 
 def test_terminal_rejeita_quantidade_de_aulas_zero(
     monkeypatch, capsys, tmp_path
@@ -122,9 +147,20 @@ def test_terminal_calcula_tempo_pendente_de_duas_aulas(
         "10\n"
         "Progamacao\nAula 2\n1\n"
         "Parte 1\n40\nn\n"
-        "5\n"
-        "0\n2\n1\n60\n"
+        "5\n"           # Revisão pendente.
+        "0\n"           # Apenas calcular.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-10-19\n"  # Data inicial: segunda-feira.
+        "2026-10-19\n"  # Data final: o mesmo dia.
+        "60\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
     )
+    
     monkeypatch.setattr("sys.stdin", entradas)
 
     main()
@@ -133,6 +169,7 @@ def test_terminal_calcula_tempo_pendente_de_duas_aulas(
    
     assert "Tempo restante: 48.0 minutos" in saida
     assert "As atividades pendentes cabem no tempo disponível." in saida
+    assert "Tempo disponível no período: 60.0 minutos" in saida
 
 def test_terminal_reutiliza_aulas_salvas(
     monkeypatch, capsys, tmp_path
@@ -143,8 +180,20 @@ def test_terminal_reutiliza_aulas_salvas(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n0\n2\n1\n30\n"
+        "10\n"          # Revisão pendente.
+        "0\n"           # Apenas calcular.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-10-19\n"  # Data inicial: segunda-feira.
+        "2026-10-19\n"  # Data final: o mesmo dia.
+        "30\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
     )
+
     monkeypatch.setattr("sys.stdin", entradas)
 
     main()
@@ -154,7 +203,19 @@ def test_terminal_reutiliza_aulas_salvas(
     assert "Tempo restante: 23.0 minutos" in saida
     assert "As atividades pendentes cabem no tempo disponível." in saida
 
-    novas_entradas = StringIO("0\n1\n1\n60\n")
+    novas_entradas = StringIO(
+        "0\n"           # Apenas calcular.
+        "1\n"           # Velocidade dos vídeos.
+        "2026-10-19\n"  # Data inicial.
+        "2026-10-19\n"  # Data final.
+        "60\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
+    )
     monkeypatch.setattr("sys.stdin", novas_entradas)
 
     main()
@@ -275,7 +336,18 @@ def test_terminal_marca_microaula_e_salva_progresso(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n0\n2\n1\n30\n"
+        "10\n"          # Revisão pendente.
+        "0\n"           # Apenas calcular.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-10-19\n"  # Data inicial: segunda-feira.
+        "2026-10-19\n"  # Data final: o mesmo dia.
+        "30\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
     )
     monkeypatch.setattr("sys.stdin", entradas)
 
@@ -291,8 +363,15 @@ def test_terminal_marca_microaula_e_salva_progresso(
         "1\n"   # Primeira aula.
         "2\n"   # Segunda microaula.
         "2\n"   # Velocidade dos vídeos.
-        "1\n"   # Quantidade de dias.
-        "60\n"  # Minutos disponíveis nesse dia.
+        "2026-10-19\n"  # Data inicial.
+        "2026-10-19\n"  # Data final.
+        "60\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
     )
     monkeypatch.setattr("sys.stdin", novas_entradas)
 
@@ -319,7 +398,18 @@ def test_terminal_conclui_revisao_e_salva_progresso(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\ns\n"
-        "10\n0\n2\n1\n30\n"
+        "10\n"          # Revisão pendente.
+        "0\n"           # Apenas calcular.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-10-19\n"  # Data inicial: segunda-feira.
+        "2026-10-19\n"  # Data final: o mesmo dia.
+        "30\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
     )
     monkeypatch.setattr("sys.stdin", entradas)
 
@@ -334,8 +424,15 @@ def test_terminal_conclui_revisao_e_salva_progresso(
         "2\n"   # Concluir revisão.
         "1\n"   # Primeira aula.
         "2\n"   # Velocidade dos vídeos.
-        "1\n"   # Quantidade de dias.
-        "60\n"  # Minutos disponíveis nesse dia.
+        "2026-10-19\n"  # Data inicial.
+        "2026-10-19\n"  # Data final.
+        "60\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
     )
     monkeypatch.setattr("sys.stdin", novas_entradas)
 
@@ -363,7 +460,18 @@ def test_terminal_bloqueia_revisao_com_microaula_pendente(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n0\n2\n1\n30\n"
+        "10\n"          # Revisão pendente.
+        "0\n"           # Apenas calcular.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-10-19\n"  # Data inicial: segunda-feira.
+        "2026-10-19\n"  # Data final: o mesmo dia.
+        "30\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
     )
     monkeypatch.setattr("sys.stdin", entradas)
 
@@ -433,13 +541,18 @@ def test_terminal_soma_disponibilidade_de_varios_dias(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n"  # Revisão pendente.
-        "0\n"   # Apenas calcular.
-        "2\n"   # Velocidade dos vídeos.
-        "3\n"   # Quantidade de dias.
-        "10\n"  # Disponibilidade do primeiro dia.
-        "0\n"   # Segundo dia sem disponibilidade.
-        "20\n"  # Disponibilidade do terceiro dia.
+        "10\n"          # Revisão pendente.
+        "0\n"           # Apenas calcular.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-10-19\n"  # Data inicial.
+        "2026-10-21\n"  # Data final.
+        "10\n"          # Segunda.
+        "0\n"           # Terça.
+        "20\n"          # Quarta.
+        "60\n"          # Quinta.
+        "60\n"          # Sexta.
+        "120\n"          # Sabado.
+        "120\n"          # Domingo.
     )
     monkeypatch.setattr("sys.stdin", entradas)
 
@@ -507,3 +620,59 @@ def test_ler_rotina_semanal_rejeita_texto_invalido(monkeypatch):
 
     with pytest.raises(ValueError):
         ler_rotina_semanal()
+
+def test_terminal_rejeita_data_inexistente(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
+    entradas = StringIO(
+        "1\n"
+        "Banco de Dados\nAula 1\n2\n"
+        "Parte 1\n29\ns\n"
+        "Parte 2\n26\nn\n"
+        "10\n"          # Revisão pendente.
+        "0\n"           # Apenas calcular.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-02-30\n"  # Data inexistente.
+    )
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    main()
+
+    saida = capsys.readouterr().out
+
+    assert "Não foi possível calcular:" in saida
+    assert "Tempo restante:" not in saida
+    assert "Tempo disponível no período:" not in saida
+
+def test_terminal_rejeita_periodo_invertido(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
+    entradas = StringIO(
+        "1\n"
+        "Banco de Dados\nAula 1\n2\n"
+        "Parte 1\n29\ns\n"
+        "Parte 2\n26\nn\n"
+        "10\n"          # Revisão pendente.
+        "0\n"           # Apenas calcular.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-10-21\n"  # Data inicial
+        "2026-10-19\n"  # Data final anterior à inicial.
+        "30\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
+    )
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    main()
+
+    saida = capsys.readouterr().out
+
+    assert "Não foi possível calcular:" in saida
+    assert "Tempo restante:" not in saida
+    assert "Tempo disponível no período:" not in saida

@@ -6,6 +6,8 @@ from progresso import marcar_microaula_concluida, marcar_revisao_concluida
 
 from datetime import date
 
+from planejamento import gerar_disponibilidades_periodo
+
 def ler_microaula() -> dict:
 
     titulo = str(input("qual o titulo da microaula? "))
@@ -158,8 +160,24 @@ def main() -> None:
             marcar_revisao_concluida(aula_selecionada)
 
         velocidade_videos = float(input("Qual velocidade dos videos? "))
-        disponibilidades = ler_disponibilidades_diarias()
-        tempo_disponivel = calcular_tempo_disponivel_total(disponibilidades)
+
+        data_inicio = ler_data("Informe a data de inicio no formato (AAAA-MM-DD): ")
+        data_fim = ler_data("Informe a data final no formato (AAAA-MM-DD): ")
+        rotina_semanal = ler_rotina_semanal()
+
+        disponibilidades = gerar_disponibilidades_periodo(
+            data_inicio=data_inicio,
+            data_fim=data_fim,
+            rotina_semanal=rotina_semanal,
+            excecoes={},
+        )
+
+        minutos_dia = []
+
+        for dia in disponibilidades:
+            minutos_dia.append(dia["minutos_disponiveis"])
+
+        tempo_disponivel = calcular_tempo_disponivel_total(minutos_dia)
 
         tempo_restante = calcular_tempo_total_pendente(aulas, velocidade_videos)
         atividade_cabe = cabe_no_tempo(tempo_restante, tempo_disponivel)
