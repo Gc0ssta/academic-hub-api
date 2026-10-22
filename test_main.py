@@ -5,7 +5,6 @@ from main import (
     ler_microaula, 
     selecionar_aula, 
     selecionar_indice_microaula, 
-    ler_disponibilidades_diarias,
     ler_data,
     ler_rotina_semanal
 )
@@ -502,35 +501,6 @@ def test_terminal_bloqueia_revisao_com_microaula_pendente(
     assert aula_salva["tempo_revisao_pendente"] == 10
     assert aula_salva["microaulas"][0]["concluida"] is True
     assert aula_salva["microaulas"][1]["concluida"] is False
-
-def test_ler_disponibilidades_diarias_aceita_dia_sem_tempo(monkeypatch):
-    entradas = StringIO("3\n60\n0\n120\n")
-    monkeypatch.setattr("sys.stdin", entradas)
-
-    disponibilidades = ler_disponibilidades_diarias()
-
-    assert disponibilidades == [60.0, 0.0, 120.0]
-
-def test_ler_disponibilidades_diarias_rejeita_zero_dias(monkeypatch):
-    entradas = StringIO("0\n")
-    monkeypatch.setattr("sys.stdin", entradas)
-
-    with pytest.raises(ValueError):
-        ler_disponibilidades_diarias()
-
-def test_ler_disponibilidades_diarias_rejeita_dias_negativos(monkeypatch):
-    entradas = StringIO("-1\n")
-    monkeypatch.setattr("sys.stdin", entradas)
-
-    with pytest.raises(ValueError):
-        ler_disponibilidades_diarias()
-
-def test_ler_disponibilidades_diarias_rejeita_minutos_negativos(monkeypatch):
-    entradas = StringIO("2\n60\n-10\n")
-    monkeypatch.setattr("sys.stdin", entradas)
-
-    with pytest.raises(ValueError):
-        ler_disponibilidades_diarias()
 
 def test_terminal_soma_disponibilidade_de_varios_dias(
     monkeypatch, capsys, tmp_path

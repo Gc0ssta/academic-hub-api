@@ -86,21 +86,6 @@ def selecionar_indice_microaula(aula: dict) -> int:
 
     return numero_escolhido - 1
 
-def ler_disponibilidades_diarias() -> list[float]:
-    quantos_dias = int(input("Quantos dias deseja considerar? "))
-    if quantos_dias <= 0:
-        raise ValueError("A quantidade de dias deve ser maior que zero.")
-
-    lista = []
-
-    for dia in range(1, quantos_dias + 1):
-        minutos = float(input(f"Quantos minutos estão disponíveis no dia {dia}? "))
-        if minutos < 0:
-            raise ValueError("Nao e possivel escolher uma numeracao negativa aqui")
-        lista.append(minutos)
-
-    return lista
-
 def ler_data(mensagem: str) -> date:
     data = date.fromisoformat(input(mensagem))
     return data
