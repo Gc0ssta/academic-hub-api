@@ -113,6 +113,23 @@ def ler_rotina_semanal() -> dict[int, float]:
 
     return rotina_semanal
 
+def ler_excecoes() -> dict[date, float]:
+    quantidade = int(input("Quantas excecoes voce pretende informar: "))
+    if quantidade < 0:
+        raise ValueError("A quantidade nao pode ser um valor negativo")
+
+    excecoes = {}
+
+    for _ in range(quantidade):
+        data_excecao = ler_data("Informe a data da excecao no formato AAAA-MM-DD : ")
+        minutos = float(input("Quantos minutos voce tera disponivel nessa data? "))
+        if minutos < 0:
+            raise ValueError("A quantidade nao pode ser um valor negativo")
+        
+        excecoes[data_excecao] = minutos
+
+    return excecoes
+
 def main() -> None:
     try:
         aulas = carregar_aulas("aulas.json")

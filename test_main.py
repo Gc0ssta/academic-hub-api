@@ -6,7 +6,8 @@ from main import (
     selecionar_aula, 
     selecionar_indice_microaula, 
     ler_data,
-    ler_rotina_semanal
+    ler_rotina_semanal,
+    ler_excecoes
 )
 
 from armazenamento import carregar_aulas
@@ -646,3 +647,44 @@ def test_terminal_rejeita_periodo_invertido(
     assert "Não foi possível calcular:" in saida
     assert "Tempo restante:" not in saida
     assert "Tempo disponível no período:" not in saida
+
+def test_ler_excecoes_aceita_quantidade_zero(monkeypatch):
+    entradas = StringIO("0\n")
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    saida = ler_excecoes()
+
+    assert saida == {}
+
+def test_ler_excecoes_le_datas_e_minutos(monkeypatch):
+    entradas = StringIO("2\n2026-10-22\n0\n2026-10-24\n30.5\n")
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    saida = ler_excecoes()
+
+    assert saida == {
+        date(2026, 10, 22): 0,
+        date(2026, 10, 24): 30.5,
+    }
+
+def test_ler_excecoes_rejeita_quantidade_negativa(monkeypatch):
+    entradas = StringIO("-1\n")
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    with pytest.raises(ValueError):
+        ler_excecoes()
+
+def test_ler_excecoes_rejeita_minutos_negativos(monkeypatch):
+    entradas = StringIO("1\n2026-10-22\n-10\n")
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    with pytest.raises(ValueError):
+        ler_excecoes()
+
+def test_ler_excecoes_data_repetida_substitui_minutos(monkeypatch):
+    entradas = StringIO("2\n2026-10-22\n60\n2026-10-22\n30\n")
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    saida = ler_excecoes()
+
+    assert saida == {date(2026, 10, 22): 30}
