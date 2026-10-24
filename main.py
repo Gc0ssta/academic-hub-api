@@ -116,7 +116,7 @@ def ler_rotina_semanal() -> dict[int, float]:
 def ler_excecoes() -> dict[date, float]:
     quantidade = int(input("Quantas excecoes voce pretende informar: "))
     if quantidade < 0:
-        raise ValueError("A quantidade nao pode ser um valor negativo")
+        raise ValueError("A quantidade de exceções não pode ser negativa.")
 
     excecoes = {}
 
@@ -124,7 +124,7 @@ def ler_excecoes() -> dict[date, float]:
         data_excecao = ler_data("Informe a data da excecao no formato AAAA-MM-DD : ")
         minutos = float(input("Quantos minutos voce tera disponivel nessa data? "))
         if minutos < 0:
-            raise ValueError("A quantidade nao pode ser um valor negativo")
+            raise ValueError("Os minutos da exceção não podem ser negativos.")
         
         excecoes[data_excecao] = minutos
 

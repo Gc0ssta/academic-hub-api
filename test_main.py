@@ -678,7 +678,7 @@ def test_ler_excecoes_rejeita_minutos_negativos(monkeypatch):
     entradas = StringIO("1\n2026-10-22\n-10\n")
     monkeypatch.setattr("sys.stdin", entradas)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Os minutos da exceção"):
         ler_excecoes()
 
 def test_ler_excecoes_data_repetida_substitui_minutos(monkeypatch):
