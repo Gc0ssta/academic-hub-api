@@ -36,7 +36,8 @@ def test_terminal_informa_que_atividades_cabem(
         "60\n"          # Quinta-feira.
         "60\n"          # Sexta-feira.
         "120\n"         # Sábado.
-        "120\n"         # Domingo.
+        "120\n"  # Domingo.
+        "0\n"    # Quantidade de exceções: nenhuma.
     )
     monkeypatch.setattr("sys.stdin", entradas)
 
@@ -68,7 +69,8 @@ def test_terminal_informa_que_atividades_nao_cabem(
         "60\n"          # Quinta-feira.
         "60\n"          # Sexta-feira.
         "120\n"         # Sábado.
-        "120\n"         # Domingo.
+        "120\n"  # Domingo.
+        "0\n"    # Quantidade de exceções: nenhuma.
     )
     
     monkeypatch.setattr("sys.stdin", entradas)
@@ -158,7 +160,8 @@ def test_terminal_calcula_tempo_pendente_de_duas_aulas(
         "60\n"          # Quinta-feira.
         "60\n"          # Sexta-feira.
         "120\n"         # Sábado.
-        "120\n"         # Domingo.
+        "120\n"  # Domingo.
+        "0\n"    # Quantidade de exceções: nenhuma.
     )
     
     monkeypatch.setattr("sys.stdin", entradas)
@@ -191,7 +194,8 @@ def test_terminal_reutiliza_aulas_salvas(
         "60\n"          # Quinta-feira.
         "60\n"          # Sexta-feira.
         "120\n"         # Sábado.
-        "120\n"         # Domingo.
+        "120\n"  # Domingo.
+        "0\n"    # Quantidade de exceções: nenhuma.
     )
 
     monkeypatch.setattr("sys.stdin", entradas)
@@ -214,7 +218,8 @@ def test_terminal_reutiliza_aulas_salvas(
         "60\n"          # Quinta-feira.
         "60\n"          # Sexta-feira.
         "120\n"         # Sábado.
-        "120\n"         # Domingo.
+        "120\n"  # Domingo.
+        "0\n"    # Quantidade de exceções: nenhuma.
     )
     monkeypatch.setattr("sys.stdin", novas_entradas)
 
@@ -347,7 +352,8 @@ def test_terminal_marca_microaula_e_salva_progresso(
         "60\n"          # Quinta-feira.
         "60\n"          # Sexta-feira.
         "120\n"         # Sábado.
-        "120\n"         # Domingo.
+        "120\n"  # Domingo.
+        "0\n"    # Quantidade de exceções: nenhuma.
     )
     monkeypatch.setattr("sys.stdin", entradas)
 
@@ -371,7 +377,8 @@ def test_terminal_marca_microaula_e_salva_progresso(
         "60\n"          # Quinta-feira.
         "60\n"          # Sexta-feira.
         "120\n"         # Sábado.
-        "120\n"         # Domingo.
+        "120\n"  # Domingo.
+        "0\n"    # Quantidade de exceções: nenhuma.
     )
     monkeypatch.setattr("sys.stdin", novas_entradas)
 
@@ -409,7 +416,8 @@ def test_terminal_conclui_revisao_e_salva_progresso(
         "60\n"          # Quinta-feira.
         "60\n"          # Sexta-feira.
         "120\n"         # Sábado.
-        "120\n"         # Domingo.
+        "120\n"  # Domingo.
+        "0\n"    # Quantidade de exceções: nenhuma.
     )
     monkeypatch.setattr("sys.stdin", entradas)
 
@@ -432,7 +440,8 @@ def test_terminal_conclui_revisao_e_salva_progresso(
         "60\n"          # Quinta-feira.
         "60\n"          # Sexta-feira.
         "120\n"         # Sábado.
-        "120\n"         # Domingo.
+        "120\n"  # Domingo.
+        "0\n"    # Quantidade de exceções: nenhuma.
     )
     monkeypatch.setattr("sys.stdin", novas_entradas)
 
@@ -471,7 +480,8 @@ def test_terminal_bloqueia_revisao_com_microaula_pendente(
         "60\n"          # Quinta-feira.
         "60\n"          # Sexta-feira.
         "120\n"         # Sábado.
-        "120\n"         # Domingo.
+        "120\n"  # Domingo.
+        "0\n"    # Quantidade de exceções: nenhuma.
     )
     monkeypatch.setattr("sys.stdin", entradas)
 
@@ -523,7 +533,8 @@ def test_terminal_soma_disponibilidade_de_varios_dias(
         "60\n"          # Quinta.
         "60\n"          # Sexta.
         "120\n"          # Sabado.
-        "120\n"          # Domingo.
+        "120\n"  # Domingo.
+        "0\n"    # Quantidade de exceções: nenhuma.
     )
     monkeypatch.setattr("sys.stdin", entradas)
 
@@ -636,7 +647,8 @@ def test_terminal_rejeita_periodo_invertido(
         "60\n"          # Quinta-feira.
         "60\n"          # Sexta-feira.
         "120\n"         # Sábado.
-        "120\n"         # Domingo.
+        "120\n"  # Domingo.
+        "0\n"    # Quantidade de exceções: nenhuma.
     )
     monkeypatch.setattr("sys.stdin", entradas)
 
@@ -688,3 +700,73 @@ def test_ler_excecoes_data_repetida_substitui_minutos(monkeypatch):
     saida = ler_excecoes()
 
     assert saida == {date(2026, 10, 22): 30}
+
+def test_terminal_aplica_excecao_zero_na_disponibilidade(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
+    entradas = StringIO(
+        "1\n"
+        "Banco de Dados\nAula 1\n2\n"
+        "Parte 1\n29\ns\n"
+        "Parte 2\n26\nn\n"
+        "10\n"          # Revisão pendente.
+        "0\n"           # Apenas calcular.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-10-19\n"  # Data inicial: segunda-feira.
+        "2026-10-19\n"  # Data final: o mesmo dia.
+        "30\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
+        "1\n"           # Uma exceção.
+        "2026-10-19\n"  # Data da exceção.
+        "0\n"           # Zero minutos disponíveis nessa data.
+    )
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    main()
+
+    saida = capsys.readouterr().out
+
+    assert "Tempo restante: 23.0 minutos" in saida
+    assert "Tempo disponível no período: 0.0 minutos" in saida
+    assert "As atividades pendentes não cabem no tempo disponível." in saida
+
+def test_terminal_rejeita_excecao_com_minutos_negativos(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
+    entradas = StringIO(
+        "1\n"
+        "Banco de Dados\nAula 1\n2\n"
+        "Parte 1\n29\ns\n"
+        "Parte 2\n26\nn\n"
+        "10\n"          # Revisão pendente.
+        "0\n"           # Apenas calcular.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-10-19\n"  # Data inicial: segunda-feira.
+        "2026-10-19\n"  # Data final: o mesmo dia.
+        "30\n"          # Segunda-feira.
+        "60\n"          # Terça-feira.
+        "60\n"          # Quarta-feira.
+        "60\n"          # Quinta-feira.
+        "60\n"          # Sexta-feira.
+        "120\n"         # Sábado.
+        "120\n"         # Domingo.
+        "1\n"           # Uma exceção.
+        "2026-10-19\n"  # Data da exceção.
+        "-10\n"         # Minutos negativos: entrada inválida.
+    )
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    main()
+
+    saida = capsys.readouterr().out
+
+    assert "Não foi possível calcular: Os minutos da exceção não podem ser negativos." in saida
+    assert "Tempo restante:" not in saida
+    assert "Tempo disponível no período:" not in saida

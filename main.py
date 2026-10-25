@@ -166,12 +166,13 @@ def main() -> None:
         data_inicio = ler_data("Informe a data de inicio no formato (AAAA-MM-DD): ")
         data_fim = ler_data("Informe a data final no formato (AAAA-MM-DD): ")
         rotina_semanal = ler_rotina_semanal()
+        excecoes = ler_excecoes()
 
         disponibilidades = gerar_disponibilidades_periodo(
             data_inicio=data_inicio,
             data_fim=data_fim,
             rotina_semanal=rotina_semanal,
-            excecoes={},
+            excecoes=excecoes,
         )
 
         minutos_dia = []
