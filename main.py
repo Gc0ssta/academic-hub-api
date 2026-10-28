@@ -156,10 +156,12 @@ def main() -> None:
             aula_selecionada = selecionar_aula(aulas)
             indice = selecionar_indice_microaula(aula_selecionada)
             marcar_microaula_concluida(aula_selecionada, indice)
-
+            
         elif opcao == "2":
             aula_selecionada = selecionar_aula(aulas)
             marcar_revisao_concluida(aula_selecionada)
+
+        salvar_aulas(aulas, "aulas.json")
 
         velocidade_videos = float(input("Qual velocidade dos videos? "))
 
@@ -184,8 +186,6 @@ def main() -> None:
 
         tempo_restante = calcular_tempo_total_pendente(aulas, velocidade_videos)
         atividade_cabe = cabe_no_tempo(tempo_restante, tempo_disponivel)
-
-        salvar_aulas(aulas, "aulas.json")
         
     except (ValueError, OSError) as erro:
         print("Não foi possível calcular:", erro)

@@ -10,11 +10,101 @@ from main import (
     ler_excecoes
 )
 
-from armazenamento import carregar_aulas
+from armazenamento import carregar_aulas, salvar_aulas
 
 import pytest
 
 from datetime import date
+
+def test_terminal_preserva_conclusao_apos_data_invalida(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
+    aulas = [{
+        "disciplina": "Banco de Dados",
+        "titulo": "Aula 1",
+        "microaulas": [
+            {"titulo": "Parte 1", "duracao_minutos": 29, "concluida": False},
+            {"titulo": "Parte 2", "duracao_minutos": 26, "concluida": False},
+        ],
+        "tempo_revisao_pendente": 10,
+    }]
+    salvar_aulas(aulas, "aulas.json")
+    entradas = StringIO(
+        "1\n"           # Marcar uma microaula como concluída.
+        "1\n"           # Primeira aula.
+        "2\n"           # Segunda microaula.
+        "2\n"           # Velocidade dos vídeos.
+        "2026-02-30\n"  # Data inicial inexistente.
+    )
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    main()
+
+    saida = capsys.readouterr().out
+    assert "Não foi possível calcular:" in saida
+    assert "Tempo restante:" not in saida
+
+    aula_salva = carregar_aulas("aulas.json")[0]
+    assert aula_salva["microaulas"][1]["concluida"] is True
+    assert aula_salva["microaulas"][0]["concluida"] is False
+    assert aula_salva["tempo_revisao_pendente"] == 10
+
+
+def test_terminal_preserva_cadastro_apos_data_invalida(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
+    entradas = StringIO(
+        "1\n"                     # Uma aula nova.
+        "Banco de Dados\nAula 1\n1\n"
+        "Parte 1\n30\nn\n10\n"
+        "0\n"                     # Apenas calcular.
+        "2\n"                     # Velocidade dos vídeos.
+        "2026-02-30\n"            # Data inexistente.
+    )
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    main()
+
+    saida = capsys.readouterr().out
+    assert "Não foi possível calcular:" in saida
+    assert "Tempo restante:" not in saida
+    assert carregar_aulas("aulas.json") == [{
+        "disciplina": "Banco de Dados",
+        "titulo": "Aula 1",
+        "microaulas": [
+            {"titulo": "Parte 1", "duracao_minutos": 30, "concluida": False},
+        ],
+        "tempo_revisao_pendente": 10,
+    }]
+
+
+def test_terminal_preserva_revisao_concluida_apos_data_invalida(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
+    aulas = [{
+        "disciplina": "Banco de Dados",
+        "titulo": "Aula 1",
+        "microaulas": [
+            {"titulo": "Parte 1", "duracao_minutos": 30, "concluida": True},
+        ],
+        "tempo_revisao_pendente": 10,
+    }]
+    salvar_aulas(aulas, "aulas.json")
+    entradas = StringIO("2\n1\n2\n2026-02-30\n")
+    monkeypatch.setattr("sys.stdin", entradas)
+
+    main()
+
+    saida = capsys.readouterr().out
+    assert "Não foi possível calcular:" in saida
+    assert "Tempo restante:" not in saida
+    aula_salva = carregar_aulas("aulas.json")[0]
+    assert aula_salva["tempo_revisao_pendente"] == 0
+    assert aula_salva["microaulas"] == aulas[0]["microaulas"]
+
 
 def test_terminal_informa_que_atividades_cabem(
     monkeypatch, capsys, tmp_path

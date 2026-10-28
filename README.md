@@ -50,7 +50,7 @@ Após informar a rotina semanal, indique quantas exceções deseja cadastrar. Di
 
 O período inclui a data inicial e a final. O programa aplica a rotina semanal e as exceções às datas desse intervalo e compara a soma dos minutos disponíveis com o tempo pendente das atividades. Exceções fora do período não afetam o total. Ainda não distribui atividades por dia nem verifica prazos de entrega.
 
-Após um cálculo bem-sucedido, o cadastro e o progresso são salvos em `aulas.json`, na pasta de execução. O período, a rotina semanal e as exceções não são salvos e precisam ser informados novamente a cada execução.
+Após uma opção válida do menu e a conclusão da ação escolhida sem erro, o cadastro e o progresso são salvos em `aulas.json`, na pasta de execução, antes das perguntas do cálculo. Se ocorrer um erro nessas perguntas ou no cálculo, os dados já gravados são preservados. Uma falha na gravação é informada como erro. O período, a rotina semanal e as exceções não são salvos e precisam ser informados novamente a cada execução.
 
 Para registrar outra conclusão, execute o programa novamente. Ainda não é possível editar títulos e durações ou desfazer conclusões pelo terminal.
 
