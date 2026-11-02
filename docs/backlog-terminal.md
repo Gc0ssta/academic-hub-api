@@ -1,6 +1,6 @@
 # Academic Hub — backlog da fase Terminal
 
-Objetivo de produto confirmado; regras e tarefas em definição · atualizado em 02/11/2026
+Escopo do MVP Terminal e regras da T02 aprovados · atualizado em 02/11/2026
 
 Este documento organiza trabalho restante, sem aprovar automaticamente regras de produto. A ordem é uma sugestão baseada nas dependências técnicas. Os identificadores T01–T12 são locais; não correspondem a issues publicadas no GitHub. Uma issue pode precisar de mais de um commit coerente.
 
@@ -8,7 +8,7 @@ Este documento organiza trabalho restante, sem aprovar automaticamente regras de
 
 Usar o terminal para cadastrar conteúdos e entregas, configurar disponibilidade, consultar atividades planejadas por data e recalcular as pendências após mudanças de progresso ou disponibilidade. O planejamento deve respeitar o tempo compartilhado entre disciplinas, as dependências e os prazos definidos, mostrando o que não couber.
 
-O objetivo foi confirmado: um planejador utilizável pelo terminal, com visão geral do período e detalhamento das atividades de cada dia, incluindo estudo, revisões, execução de projetos e provas. As regras de distribuição, reservas e interação continuam pendentes; confirmar o objetivo não aprova automaticamente cada solução proposta abaixo.
+O objetivo foi confirmado: um planejador utilizável pelo terminal, com visão geral do período e detalhamento diário de estudo, revisões e execução de projetos. Provas são apresentadas por janela de realização e estado, sem agendamento de duração. As regras, os exemplos e a visão global do MVP foram aprovados em 02/11/2026, encerrando a T02. A aprovação do escopo não significa que o planejador já esteja implementado; os detalhes técnicos serão resolvidos nas tarefas seguintes.
 
 ## Como reconhecer a entrega pronta
 
@@ -16,7 +16,7 @@ A fase deve permitir percorrer este fluxo sem editar manualmente arquivos de dad
 
 1. Cadastrar e corrigir disciplinas/conteúdos, progresso, entregas, prazos regulares e as estimativas necessárias para o planejamento.
 2. Configurar e reutilizar a rotina semanal, a velocidade escolhida e exceções de disponibilidade por data.
-3. Consultar uma visão geral do período, com prazos e tempo reservado para preparar projetos e provas, e consultar o detalhe de cada dia com atividades identificáveis e minutos estimados.
+3. Consultar uma visão geral do período, com prazos, estudo e tempo reservado para executar projetos, e consultar o detalhe diário dessas atividades com minutos estimados. Para provas, consultar a janela, as pendências de preparação e o estado de liberação/conclusão, sem reserva de minutos para realizá-las.
 4. Registrar o que realmente foi feito. Se cinco atividades estavam planejadas e apenas três foram concluídas, as outras duas continuam pendentes.
 5. Recalcular as pendências futuras conforme as regras aprovadas, mostrando a nova distribuição e os impactos sobre as entregas. Não ultrapassar a capacidade, duplicar tempo ou alterar a velocidade silenciosamente.
 6. Fechar e abrir o programa, recuperar cadastro, progresso e configurações e gerar novamente o plano a partir deles.
@@ -198,6 +198,37 @@ Em ambas as alternativas, as datas posteriores são previsões condicionadas ao 
 
 Uso esperado: antecipar quando surgir tempo livre hoje; cadastrar exceções para mudanças conhecidas de disponibilidade, como um compromisso futuro que reduza uma data de 40 para zero minutos. Se a disponibilidade dessa mesma data voltar a 40 minutos antes de ela chegar, substituir o valor da exceção e recalcular as pendências com a capacidade restaurada, sem alterar a rotina semanal ou o progresso. Isso não transfere automaticamente os 40 minutos para o dia anterior. O usuário também pode fazer novas antecipações, uma por vez, respeitando a sequência.
 
+### Fluxo de aulas, projetos e provas — aprovado
+
+Cenário reduzido aprovado em 02/11/2026, com 60 minutos disponíveis por dia, sem antecipações. Banco de Dados e Programação têm duas aulas cada, com 30 minutos por aula incluindo sua revisão. A fase 1 exige a aula 1 de cada disciplina; a fase 2 exige a aula 2. Cada projeto tem estimativa de 60 minutos, totalizando 120 minutos por bloco conjunto. Prazos regulares: fase 1 no dia 3 e fase 2 no dia 6. As provas abrem no dia 9 e encerram sua janela no dia 12.
+
+| Dia | Planejamento esperado |
+| --- | --- |
+| 1 | Aula 1 de Banco de Dados e revisão, depois aula 1 de Programação e revisão: 60 min |
+| 2 | Projetos — fase 1: 60 min previstos |
+| 3 | Projetos — fase 1: 60 min previstos; prazo regular da fase 1 |
+| 4 | Aula 2 de Banco de Dados e revisão, depois aula 2 de Programação e revisão: 60 min |
+| 5 | Projetos — fase 2: 60 min previstos |
+| 6 | Projetos — fase 2: 60 min previstos; prazo regular da fase 2 |
+| 7 e 8 | Sem atividades planejadas; aguardando abertura das provas |
+| 9 a 12 | Provas liberadas enquanto pendentes e dentro da janela, sem reserva de minutos |
+
+Premissa do cenário: o usuário registra as conclusões das aulas nos dias indicados e conclui individualmente ambos os projetos de cada bloco até seu último dia previsto. O usuário escolhe a divisão do trabalho entre os projetos, sem apontamento de minutos.
+
+As aulas do dia 4 são apenas previsão enquanto houver projeto da fase 1 pendente. Sua liberação depende da conclusão de ambos os projetos; os 120 minutos estimados não registram essa conclusão. Cada bloco começa no dia seguinte ao término da preparação, e as aulas são retomadas no dia seguinte à conclusão do bloco, salvo antecipação explícita. As provas conservam conclusões individuais e sua liberação depende da janela e dos pré-requisitos; não são automaticamente concluídas no dia 12.
+
+### Projeto pendente após a previsão e o prazo — aprovado
+
+Variação do fluxo anterior, aprovada em 02/11/2026: no início do dia 4, somente um dos projetos da fase 1 foi registrado como concluído. O outro continua pendente, apesar da previsão de término e do prazo regular no dia 3.
+
+- Preservar o projeto já concluído; manter o foco exclusivo no projeto restante e mostrar que seu prazo regular encerrou.
+- As aulas anteriormente previstas para o dia 4 permanecem bloqueadas. A estimativa esgotada não libera a continuidade nem comprova trabalho realizado.
+- Não inventar um esforço restante, uma nova data de conclusão do projeto ou um prazo extra. Identificar a previsão posterior como desatualizada/condicionada à conclusão, sem apresentar datas antigas como um plano atual viável.
+- Se o usuário registrar a conclusão do projeto restante no dia 4, recalcular então a continuidade com início no dia 5. O recálculo pode ser apresentado imediatamente após o registro; não é preciso aguardar a meia-noite para consultar a nova previsão. Realizar a próxima atividade no próprio dia 4 exige antecipação explícita.
+- A previsão recalculada precisa verificar novamente os prazos seguintes. Concluir o projeto atrasado não altera seu prazo original nem garante que as próximas entregas caibam.
+
+As estimativas de projetos permitem visualizar o período, reservar esforço e verificar prazos; não medem a execução nem concluem projetos. A visão pode mostrar o término previsto dos conteúdos e projetos e as janelas das provas. Como as provas não são agendadas, não apresentar essa previsão como garantia da data de conclusão de todo o trimestre.
+
 ## Pendências de produto e implementação
 
 Detalhes técnicos a resolver antes de T04 e T05, com comportamento de produto já definido:
@@ -231,7 +262,7 @@ Antes de T08:
 
 ### T02 — Definir o comportamento do planejador com um exemplo manual
 
-**Estado:** em andamento, na consolidação dos exemplos e revisão final do MVP. As regras de estudo, recálculo, projetos, provas e prazos estão registradas acima. Aprovados o exemplo inicial, o recálculo com conclusões e atraso e as alternativas de disponibilidade/antecipação. Restam consolidar os cenários de projetos/provas, realizar a checagem final do revisor e validar a visão completa do MVP com o responsável pelo produto. Detalhes de persistência e migração serão resolvidos na implementação; correção de conclusão após revisão está vinculada a T08.
+**Estado:** concluída em 02/11/2026, após validação global do MVP pelo responsável pelo produto. Aprovados os exemplos de estudo, recálculo com conclusões e atraso, disponibilidade/antecipação, fluxo completo de aulas/projetos/provas e projeto pendente após a previsão e o prazo. Na confirmação final, foi mantida a regra anterior de projetos: foco individual quando os requisitos diferem e agrupamento dos projetos da mesma fase quando exigem a mesma quantidade de aulas, aguardando a preparação de ambos. Revisão independente concluída: cálculos conferidos e nenhum bloqueador identificado para T03–T05; referências antigas corrigidas. A conclusão da T02 valida o escopo e o comportamento esperado, não a implementação. Detalhes de persistência e migração serão resolvidos na implementação; correção de conclusão após revisão está vinculada a T08.
 
 **Aceite:**
 - Resolver as decisões de divisão, ordem, revisão e data de referência listadas acima.
@@ -370,7 +401,7 @@ Antes de T08:
 
 ## Ordem sugerida e limites
 
-T01 está concluída localmente. Para o foco no recalculador, a sequência técnica é T02 → T03 → T04 → T05 → T06. T07 e T08 tornam o uso recorrente mais prático e podem ser priorizadas antes. T09 → T10 → T11 completam o planejamento por entregas. T12 verifica o conjunto aprovado.
+T01 está concluída localmente e T02 teve seu escopo validado pelo responsável pelo produto. Para o foco no recalculador, a próxima sequência técnica é T03 → T04 → T05 → T06. T07 e T08 tornam o uso recorrente mais prático e podem ser priorizadas antes. T09 → T10 → T11 completam o planejamento por entregas. T12 verifica o conjunto aprovado.
 
 API, interface web, autenticação, PostgreSQL, Docker, nuvem, importação de PDFs e integração com o portal não são planejados neste backlog. Notas, faltas e regras de penalidade também ficam fora da proposta desta fase, conforme os limites já registrados; sua inclusão exigiria uma decisão explícita de escopo.
 
