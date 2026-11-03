@@ -1,5 +1,44 @@
 from datetime import date, timedelta
 
+from calculos import calcular_tempo_video
+
+
+def gerar_atividades_microaulas_pendentes(
+    microaulas: list[dict],
+    velocidade: float,
+) -> list[dict]:
+    """Retorna atividades das microaulas pendentes na ordem recebida.
+
+    Cada atividade contém tipo ("microaula"), titulo e
+    tempo_estimado_minutos, calculado na velocidade informada.
+    Não modifica os dados recebidos nem inclui revisões.
+    """
+    if velocidade <= 0:
+        raise ValueError("A velocidade deve ser maior que zero.")
+
+    atividades = []
+
+    for microaula in microaulas:
+        if type(microaula["concluida"]) is not bool:
+            raise TypeError("A conclusão da microaula deve ser um booleano.")
+
+        if microaula["concluida"] is True:
+            continue
+
+        tempo_estimado = calcular_tempo_video(
+            microaula["duracao_minutos"],
+            velocidade,
+        )
+
+        atividade = {
+            "tipo": "microaula",
+            "titulo": microaula["titulo"],
+            "tempo_estimado_minutos": tempo_estimado,
+        }
+        atividades.append(atividade)
+
+    return atividades
+
 
 def gerar_datas_periodo(
     data_inicio: date,

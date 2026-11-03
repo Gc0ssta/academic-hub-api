@@ -42,6 +42,7 @@ Decisão de 02/11/2026: a reserva diária de exercícios fica fora da fase Termi
 - Leitura de datas, rotina semanal e exceções pelo terminal.
 - Disponibilidade por data: exceções substituem a rotina; zero é permitido; data repetida usa o último valor.
 - Comparação entre o total pendente e o total disponível no período.
+- Função auxiliar que transforma microaulas pendentes em atividades com tipo, título e tempo estimado, preservando a ordem e os dados originais. Ainda sem integração ao terminal ou distribuição por datas.
 - Testes automatizados e execução no GitHub Actions.
 
 Reexecutar o programa com outros dados já recalcula os totais. Isso ainda não produz um cronograma de atividades nem verifica prazos por entrega. Exceções fora do período não afetam a soma, e passar um dia não marca nenhuma atividade como concluída.
@@ -274,6 +275,8 @@ Antes de T08:
 **Dependências:** nenhuma. Não exige uma funcionalidade nova.
 
 ### T03 — Representar atividades pendentes para o agendamento
+
+**Estado:** em andamento. Implementada `gerar_atividades_microaulas_pendentes`, com filtragem das concluídas, cálculo pela velocidade, preservação da ordem e da entrada e validações consistentes com os cálculos existentes. Testes cobrem esses comportamentos; suíte com 128 testes passando na validação desta etapa. Ainda faltam vínculos com aula/disciplina, identificação estável, revisões e composição da sequência. A função auxiliar não está integrada ao fluxo do terminal e não encerra T03.
 
 **Problema:** o total de minutos não informa qual vídeo ou revisão deve ser realizado em cada data.
 

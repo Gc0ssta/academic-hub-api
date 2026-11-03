@@ -1,11 +1,81 @@
+from copy import deepcopy
 from datetime import date
 
 from planejamento import (
+    gerar_atividades_microaulas_pendentes,
     gerar_datas_periodo,
     gerar_disponibilidades_periodo,
 )
 
 import pytest
+
+
+def test_gerar_atividades_filtra_concluidas_preserva_ordem_e_calcula_tempos():
+    microaulas = [
+        {"titulo": "Parte 1", "duracao_minutos": 30, "concluida": True},
+        {"titulo": "Parte 2", "duracao_minutos": 40, "concluida": False},
+        {"titulo": "Parte 3", "duracao_minutos": 20, "concluida": True},
+        {"titulo": "Parte 4", "duracao_minutos": 15, "concluida": False},
+    ]
+
+    resultado = gerar_atividades_microaulas_pendentes(microaulas, 2)
+
+    assert resultado == [
+        {"tipo": "microaula", "titulo": "Parte 2", "tempo_estimado_minutos": 20},
+        {"tipo": "microaula", "titulo": "Parte 4", "tempo_estimado_minutos": 7.5},
+    ]
+
+
+@pytest.mark.parametrize("microaulas", [
+    [],
+    [{"titulo": "Parte 1", "duracao_minutos": 30, "concluida": True}],
+])
+def test_gerar_atividades_sem_pendencias_retorna_lista_vazia(microaulas):
+    assert gerar_atividades_microaulas_pendentes(microaulas, 2) == []
+
+
+def test_gerar_atividades_nao_modifica_as_microaulas_recebidas():
+    microaulas = [
+        {"titulo": "Parte 1", "duracao_minutos": 30, "concluida": True},
+        {"titulo": "Parte 2", "duracao_minutos": 40, "concluida": False},
+    ]
+    original = deepcopy(microaulas)
+
+    resultado = gerar_atividades_microaulas_pendentes(microaulas, 2)
+    resultado[0]["titulo"] = "Título alterado na atividade"
+
+    assert microaulas == original
+
+
+@pytest.mark.parametrize("velocidade", [0, -1])
+@pytest.mark.parametrize("microaulas", [
+    [],
+    [{"titulo": "Parte 1", "duracao_minutos": 30, "concluida": True}],
+    [{"titulo": "Parte 1", "duracao_minutos": 30, "concluida": False}],
+])
+def test_gerar_atividades_rejeita_velocidade_invalida(microaulas, velocidade):
+    with pytest.raises(ValueError, match="A velocidade deve ser maior que zero"):
+        gerar_atividades_microaulas_pendentes(microaulas, velocidade)
+
+
+@pytest.mark.parametrize("concluida", [1, "False", None])
+def test_gerar_atividades_rejeita_conclusao_nao_booleana(concluida):
+    microaulas = [
+        {"titulo": "Parte 1", "duracao_minutos": 30, "concluida": concluida},
+    ]
+
+    with pytest.raises(TypeError, match="A conclusão da microaula deve ser um booleano"):
+        gerar_atividades_microaulas_pendentes(microaulas, 2)
+
+
+@pytest.mark.parametrize("duracao", [0, -10])
+def test_gerar_atividades_rejeita_duracao_pendente_invalida(duracao):
+    microaulas = [
+        {"titulo": "Parte 1", "duracao_minutos": duracao, "concluida": False},
+    ]
+
+    with pytest.raises(ValueError, match="A duração do video deve ser maior que zero"):
+        gerar_atividades_microaulas_pendentes(microaulas, 2)
 
 
 def test_gerar_datas_periodo_inclui_inicio_e_fim():
