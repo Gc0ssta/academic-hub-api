@@ -280,6 +280,8 @@ Antes de T08:
 
 **Problema:** o total de minutos não informa qual vídeo ou revisão deve ser realizado em cada data.
 
+**Incremento de 05/11/2026:** adicionada `atribuir_ids_microaulas`, em `cadastro.py`. Antes da gravação já existente no terminal, microaulas sem a chave `id` recebem um UUID convertido em texto; IDs existentes e demais dados são preservados. Isso atende cadastros novos e antigos, sem gravar durante a leitura nem alterar o arquivo antes de uma ação válida. A função preenche chaves ausentes; ainda não valida IDs fornecidos externamente. Os vínculos das atividades geradas com esses IDs, aula/disciplina, as revisões e a composição da sequência continuam pendentes.
+
 **Aceite:**
 - Produzir atividades identificáveis, vinculadas à aula e à disciplina, com duração restante e dependências conforme T02.
 - Excluir atividades concluídas e incluir revisão pendente uma única vez.

@@ -16,6 +16,36 @@ import pytest
 
 from datetime import date
 
+def test_terminal_adapta_cadastro_antigo_e_preserva_id_na_proxima_execucao(
+    monkeypatch, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
+    aulas = [{
+        "disciplina": "Banco de Dados",
+        "titulo": "Aula 1",
+        "microaulas": [
+            {"titulo": "Parte 1", "duracao_minutos": 30, "concluida": True},
+        ],
+        "tempo_revisao_pendente": 10,
+    }]
+    salvar_aulas(aulas, "aulas.json")
+    monkeypatch.setattr("sys.stdin", StringIO("0\n2\n2026-02-30\n"))
+
+    main()
+
+    primeira_gravacao = carregar_aulas("aulas.json")
+    identificador = primeira_gravacao[0]["microaulas"][0]["id"]
+    assert isinstance(identificador, str)
+    assert identificador != ""
+    aulas[0]["microaulas"][0]["id"] = identificador
+    assert primeira_gravacao == aulas
+
+    monkeypatch.setattr("sys.stdin", StringIO("0\n2\n2026-02-30\n"))
+    main()
+
+    assert carregar_aulas("aulas.json") == primeira_gravacao
+
+
 def test_terminal_preserva_conclusao_apos_data_invalida(
     monkeypatch, capsys, tmp_path
 ):
@@ -70,11 +100,15 @@ def test_terminal_preserva_cadastro_apos_data_invalida(
     saida = capsys.readouterr().out
     assert "Não foi possível calcular:" in saida
     assert "Tempo restante:" not in saida
-    assert carregar_aulas("aulas.json") == [{
+    aulas_salvas = carregar_aulas("aulas.json")
+    identificador = aulas_salvas[0]["microaulas"][0]["id"]
+    assert isinstance(identificador, str)
+    assert identificador != ""
+    assert aulas_salvas == [{
         "disciplina": "Banco de Dados",
         "titulo": "Aula 1",
         "microaulas": [
-            {"titulo": "Parte 1", "duracao_minutos": 30, "concluida": False},
+            {"id": identificador, "titulo": "Parte 1", "duracao_minutos": 30, "concluida": False},
         ],
         "tempo_revisao_pendente": 10,
     }]
@@ -88,7 +122,7 @@ def test_terminal_preserva_revisao_concluida_apos_data_invalida(
         "disciplina": "Banco de Dados",
         "titulo": "Aula 1",
         "microaulas": [
-            {"titulo": "Parte 1", "duracao_minutos": 30, "concluida": True},
+            {"id": "micro-existente", "titulo": "Parte 1", "duracao_minutos": 30, "concluida": True},
         ],
         "tempo_revisao_pendente": 10,
     }]

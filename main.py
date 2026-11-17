@@ -1,6 +1,7 @@
 from calculos import calcular_tempo_total_pendente, cabe_no_tempo, calcular_tempo_disponivel_total
 
 from armazenamento import carregar_aulas, salvar_aulas
+from cadastro import atribuir_ids_microaulas
 
 from progresso import marcar_microaula_concluida, marcar_revisao_concluida
 
@@ -161,6 +162,7 @@ def main() -> None:
             aula_selecionada = selecionar_aula(aulas)
             marcar_revisao_concluida(aula_selecionada)
 
+        atribuir_ids_microaulas(aulas)
         salvar_aulas(aulas, "aulas.json")
 
         velocidade_videos = float(input("Qual velocidade dos videos? "))
