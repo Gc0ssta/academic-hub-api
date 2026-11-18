@@ -280,6 +280,8 @@ Antes de T08:
 
 **Problema:** o total de minutos não informa qual vídeo ou revisão deve ser realizado em cada data.
 
+**Incremento de 17/11/2026:** cada atividade de microaula gerada contém `microaula_id`, copiado do ID já atribuído no cadastro. Regerar as pendências preserva o vínculo mesmo com títulos iguais ou mudança de velocidade, excluindo as concluídas sem removê-las do cadastro. A função exige IDs nas microaulas pendentes; não os gera. Ainda não há conclusão pelo ID no terminal nem integração dessa lista ao cronograma. Permanecem pendentes os vínculos com aula/disciplina, revisões e composição da sequência.
+
 **Incremento de 05/11/2026:** adicionada `atribuir_ids_microaulas`, em `cadastro.py`. Antes da gravação já existente no terminal, microaulas sem a chave `id` recebem um UUID convertido em texto; IDs existentes e demais dados são preservados. Isso atende cadastros novos e antigos, sem gravar durante a leitura nem alterar o arquivo antes de uma ação válida. A função preenche chaves ausentes; ainda não valida IDs fornecidos externamente. Os vínculos das atividades geradas com esses IDs, aula/disciplina, as revisões e a composição da sequência continuam pendentes.
 
 **Aceite:**

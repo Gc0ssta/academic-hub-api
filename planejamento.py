@@ -9,8 +9,10 @@ def gerar_atividades_microaulas_pendentes(
 ) -> list[dict]:
     """Retorna atividades das microaulas pendentes na ordem recebida.
 
-    Cada atividade contém tipo ("microaula"), titulo e
+    Cada atividade contém microaula_id, tipo ("microaula"), titulo e
     tempo_estimado_minutos, calculado na velocidade informada.
+    As microaulas pendentes devem possuir IDs atribuídos no cadastro.
+    Reutiliza esses IDs, sem gerar identificadores durante o planejamento.
     Não modifica os dados recebidos nem inclui revisões.
     """
     if velocidade <= 0:
@@ -31,6 +33,7 @@ def gerar_atividades_microaulas_pendentes(
         )
 
         atividade = {
+            "microaula_id": microaula["id"],
             "tipo": "microaula",
             "titulo": microaula["titulo"],
             "tempo_estimado_minutos": tempo_estimado,
