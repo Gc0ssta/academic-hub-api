@@ -44,6 +44,10 @@ Após cadastrar ou recuperar as aulas, escolha uma opção:
 
 Para concluir uma revisão, todas as microaulas daquela aula precisam estar concluídas. Finalizar os vídeos não conclui a revisão automaticamente.
 
+No cadastro de uma aula, informe a duração da revisão em minutos (maior que zero) e se ela já foi concluída (`s` ou `n`). Concluir a revisão preserva sua duração original, mas faz seu tempo pendente ser zero. A velocidade dos vídeos não altera o tempo da revisão.
+
+Cadastros antigos são adaptados ao abrir o programa: minutos de revisão maiores que zero viram a duração de uma revisão pendente. Quando o valor antigo é zero, o programa identifica a aula e pede a duração original, mantendo a revisão concluída. Essa informação deixa de ser solicitada depois que a adaptação é salva, após uma ação válida do menu. Uma resposta inválida não sobrescreve o arquivo.
+
 Em seguida, informe a velocidade dos vídeos, a data inicial, a data final e os minutos disponíveis em cada dia da semana, de segunda a domingo. Use datas no formato `AAAA-MM-DD` e ponto nos valores decimais, como `1.5` para a velocidade. Dias sem disponibilidade devem receber `0` minutos.
 
 Após informar a rotina semanal, indique quantas exceções deseja cadastrar. Digite `0` se não houver nenhuma. Para cada exceção, informe a data e os minutos disponíveis, que substituirão os minutos previstos pela rotina naquela data. Zero minutos também é permitido. Se a mesma data for informada mais de uma vez, vale o último valor.

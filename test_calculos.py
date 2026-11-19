@@ -294,12 +294,22 @@ def test_tempo_pendente_da_aula_com_revisao():
                 "concluida": False,
             },
         ],
-        "tempo_revisao_pendente": 10,
+        "revisao": {"id": "rev-teste", "duracao_minutos": 10, "concluida": False},
     }
 
-    tempo_videos = calcular_tempo_microaulas_pendentes(aula["microaulas"],2)
+    assert calcular_tempo_total_pendente([aula], 2) == 23
 
-    assert tempo_videos + aula["tempo_revisao_pendente"] == 23
+@pytest.mark.parametrize("velocidade", [1, 2])
+@pytest.mark.parametrize("concluida, esperado", [(False, 10), (True, 0)])
+def test_tempo_revisao_depende_da_conclusao_e_nao_da_velocidade(velocidade, concluida, esperado):
+    aulas = [{
+        "microaulas": [{"titulo": "Parte 1", "duracao_minutos": 30, "concluida": True}],
+        "revisao": {"id": "rev-1", "duracao_minutos": 10, "concluida": concluida},
+    }]
+
+    assert calcular_tempo_total_pendente(aulas, velocidade) == esperado
+    assert aulas[0]["revisao"]["duracao_minutos"] == 10
+
 
 def test_calcular_tempo_total_pendente_com_duas_aulas():
 
@@ -319,7 +329,7 @@ def test_calcular_tempo_total_pendente_com_duas_aulas():
                     "concluida": False,
                 },
             ],
-            "tempo_revisao_pendente": 10,
+            "revisao": {"id": "rev-teste", "duracao_minutos": 10, "concluida": False},
         },
         {
             "disciplina": "Banco de Dados",
@@ -331,7 +341,7 @@ def test_calcular_tempo_total_pendente_com_duas_aulas():
                     "concluida": False,
                 },
             ],
-            "tempo_revisao_pendente": 10,
+            "revisao": {"id": "rev-teste", "duracao_minutos": 10, "concluida": False},
         },
     ]
 
@@ -355,7 +365,7 @@ def test_calcular_tempo_total_pendente_com_duas_aulas_aula_1_com_todas_aulas_con
                     "concluida": True,
                 },
             ],
-            "tempo_revisao_pendente": 10,
+            "revisao": {"id": "rev-teste", "duracao_minutos": 10, "concluida": False},
         },
         {
             "disciplina": "Banco de Dados",
@@ -367,7 +377,7 @@ def test_calcular_tempo_total_pendente_com_duas_aulas_aula_1_com_todas_aulas_con
                     "concluida": False,
                 },
             ],
-            "tempo_revisao_pendente": 10,
+            "revisao": {"id": "rev-teste", "duracao_minutos": 10, "concluida": False},
         },
     ]
 
@@ -411,7 +421,7 @@ def test_calcular_tempo_total_pendente_com_tempo_revisao_negativo():
                     "concluida": True,
                 },
             ],
-            "tempo_revisao_pendente": -10,
+            "revisao": {"id": "rev-teste", "duracao_minutos": -10, "concluida": False},
         },
         {
             "disciplina": "Banco de Dados",
@@ -423,7 +433,7 @@ def test_calcular_tempo_total_pendente_com_tempo_revisao_negativo():
                     "concluida": False,
                 },
             ],
-            "tempo_revisao_pendente": 10,
+            "revisao": {"id": "rev-teste", "duracao_minutos": 10, "concluida": False},
         },
     ]
 

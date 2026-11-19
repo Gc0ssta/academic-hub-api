@@ -17,5 +17,5 @@ def marcar_revisao_concluida(aula: dict) -> None:
         if microaula["concluida"] is False:
             raise ValueError("Ainda ha videos pendentes a serem concluidos")
 
-    aula["tempo_revisao_pendente"] = 0
+    aula["revisao"]["concluida"] = True
 

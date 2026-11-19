@@ -1,7 +1,7 @@
 from calculos import calcular_tempo_total_pendente, cabe_no_tempo, calcular_tempo_disponivel_total
 
 from armazenamento import carregar_aulas, salvar_aulas
-from cadastro import atribuir_ids_microaulas
+from cadastro import atribuir_ids_microaulas, criar_revisao, adaptar_revisao_antiga
 
 from progresso import marcar_microaula_concluida, marcar_revisao_concluida
 
@@ -49,18 +49,37 @@ def ler_aula() -> dict:
         microaula = ler_microaula()
         microaulas.append(microaula)
 
-    tempo_revisao_pendente = float(input("Quantos minutos de revisao pendente? "))
-    if tempo_revisao_pendente < 0:
-        raise ValueError("O tempo de revisao nao pode ser negativo")
+    duracao_revisao = float(input("Quantos minutos dura a revisão? "))
+    revisao = criar_revisao(duracao_revisao)
+    resposta = input("A revisão já foi concluída? Digite s ou n: ").lower()
+    if resposta != "s" and resposta != "n":
+        raise ValueError("Digite s para concluída ou n para não concluída.")
 
     aula = {
         "disciplina": disciplina,
         "titulo": titulo,
         "microaulas": microaulas,
-        "tempo_revisao_pendente": tempo_revisao_pendente
+        "revisao": revisao,
     }
 
+    if resposta == "s":
+        marcar_revisao_concluida(aula)
+
     return aula
+
+def preparar_revisoes_antigas(aulas: list[dict]) -> None:
+    """Pede apenas as durações que o cadastro antigo não permite recuperar."""
+    for aula in aulas:
+        if "revisao" in aula:
+            continue
+
+        duracao_original = None
+        if aula["tempo_revisao_pendente"] == 0:
+            print(f'Revisão já concluída: {aula["disciplina"]} — {aula["titulo"]}.')
+            duracao_original = float(input("Informe a duração original da revisão em minutos: "))
+
+        adaptar_revisao_antiga(aula, duracao_original)
+
 
 def selecionar_aula(aulas: list[dict]) -> dict:
     for numero, aula in enumerate(aulas, start=1):
@@ -143,6 +162,8 @@ def main() -> None:
             for _ in range(quantidade_aulas):
                 aula = ler_aula()
                 aulas.append(aula)
+
+        preparar_revisoes_antigas(aulas)
 
         print("0 - Apenas calcular o tempo pendente")
         print("1 - Marcar uma microaula como concluída")

@@ -3,6 +3,7 @@ from io import StringIO
 from main import (
     main, 
     ler_microaula, 
+    ler_aula,
     selecionar_aula, 
     selecionar_indice_microaula, 
     ler_data,
@@ -15,6 +16,79 @@ from armazenamento import carregar_aulas, salvar_aulas
 import pytest
 
 from datetime import date
+
+def test_terminal_recupera_duracao_de_revisao_concluida_uma_vez(
+    monkeypatch, tmp_path, capsys
+):
+    monkeypatch.chdir(tmp_path)
+    aulas = [{
+        "disciplina": "Banco de Dados",
+        "titulo": "Aula 1",
+        "microaulas": [{"id": "micro-1", "titulo": "Parte 1", "duracao_minutos": 30, "concluida": True}],
+        "tempo_revisao_pendente": 0,
+    }]
+    salvar_aulas(aulas, "aulas.json")
+    # Duração recuperada, opção 0 e dados de cálculo com um dia disponível.
+    calculo = "0\n2\n2026-11-18\n2026-11-18\n60\n60\n60\n60\n60\n120\n120\n0\n"
+    monkeypatch.setattr("sys.stdin", StringIO("15\n" + calculo))
+
+    main()
+
+    saida = capsys.readouterr().out
+    assert "Banco de Dados — Aula 1" in saida
+    assert "Informe a duração original" in saida
+    assert "Tempo restante: 0.0 minutos" in saida
+    salvas = carregar_aulas("aulas.json")
+    revisao = salvas[0]["revisao"]
+    assert revisao["duracao_minutos"] == 15
+    assert revisao["concluida"] is True
+    assert revisao["id"] != ""
+    assert "tempo_revisao_pendente" not in salvas[0]
+    assert salvas[0]["microaulas"] == aulas[0]["microaulas"]
+
+    monkeypatch.setattr("sys.stdin", StringIO(calculo))
+    main()
+
+    nova_saida = capsys.readouterr().out
+    assert "Informe a duração original" not in nova_saida
+    assert "Tempo restante: 0.0 minutos" in nova_saida
+    assert carregar_aulas("aulas.json") == salvas
+
+
+@pytest.mark.parametrize("entrada", ["0\n", "-1\n", "abc\n"])
+def test_terminal_nao_sobrescreve_arquivo_quando_duracao_recuperada_e_invalida(
+    monkeypatch, tmp_path, capsys, entrada
+):
+    monkeypatch.chdir(tmp_path)
+    aulas = [{"disciplina": "Banco de Dados", "titulo": "Aula 1", "microaulas": [], "tempo_revisao_pendente": 0}]
+    salvar_aulas(aulas, "aulas.json")
+    caminho = tmp_path / "aulas.json"
+    arquivo_original = caminho.read_bytes()
+    monkeypatch.setattr("sys.stdin", StringIO(entrada))
+
+    main()
+
+    assert "Não foi possível calcular:" in capsys.readouterr().out
+    assert caminho.read_bytes() == arquivo_original
+
+
+@pytest.mark.parametrize("concluida, esperado", [("s", True), ("n", False)])
+def test_ler_aula_guarda_duracao_e_conclusao_da_revisao_separadas(monkeypatch, concluida, esperado):
+    monkeypatch.setattr("sys.stdin", StringIO("Banco de Dados\nAula 1\n1\nParte 1\n30\ns\n15\n" + concluida + "\n"))
+
+    aula = ler_aula()
+
+    assert aula["revisao"]["duracao_minutos"] == 15
+    assert aula["revisao"]["concluida"] is esperado
+    assert aula["revisao"]["id"] != ""
+    assert "tempo_revisao_pendente" not in aula
+
+
+def test_ler_aula_bloqueia_revisao_concluida_com_video_pendente(monkeypatch):
+    monkeypatch.setattr("sys.stdin", StringIO("Banco de Dados\nAula 1\n1\nParte 1\n30\nn\n15\ns\n"))
+    with pytest.raises(ValueError, match="Ainda ha videos pendentes"):
+        ler_aula()
+
 
 def test_terminal_adapta_cadastro_antigo_e_preserva_id_na_proxima_execucao(
     monkeypatch, tmp_path
@@ -38,6 +112,12 @@ def test_terminal_adapta_cadastro_antigo_e_preserva_id_na_proxima_execucao(
     assert isinstance(identificador, str)
     assert identificador != ""
     aulas[0]["microaulas"][0]["id"] = identificador
+    del aulas[0]["tempo_revisao_pendente"]
+    aulas[0]["revisao"] = {
+        "id": primeira_gravacao[0]["revisao"]["id"],
+        "duracao_minutos": 10,
+        "concluida": False,
+    }
     assert primeira_gravacao == aulas
 
     monkeypatch.setattr("sys.stdin", StringIO("0\n2\n2026-02-30\n"))
@@ -78,7 +158,8 @@ def test_terminal_preserva_conclusao_apos_data_invalida(
     aula_salva = carregar_aulas("aulas.json")[0]
     assert aula_salva["microaulas"][1]["concluida"] is True
     assert aula_salva["microaulas"][0]["concluida"] is False
-    assert aula_salva["tempo_revisao_pendente"] == 10
+    assert aula_salva["revisao"]["duracao_minutos"] == 10
+    assert aula_salva["revisao"]["concluida"] is False
 
 
 def test_terminal_preserva_cadastro_apos_data_invalida(
@@ -88,7 +169,7 @@ def test_terminal_preserva_cadastro_apos_data_invalida(
     entradas = StringIO(
         "1\n"                     # Uma aula nova.
         "Banco de Dados\nAula 1\n1\n"
-        "Parte 1\n30\nn\n10\n"
+        "Parte 1\n30\nn\n10\nn\n"
         "0\n"                     # Apenas calcular.
         "2\n"                     # Velocidade dos vídeos.
         "2026-02-30\n"            # Data inexistente.
@@ -110,7 +191,7 @@ def test_terminal_preserva_cadastro_apos_data_invalida(
         "microaulas": [
             {"id": identificador, "titulo": "Parte 1", "duracao_minutos": 30, "concluida": False},
         ],
-        "tempo_revisao_pendente": 10,
+        "revisao": {"id": aulas_salvas[0]["revisao"]["id"], "duracao_minutos": 10, "concluida": False},
     }]
 
 
@@ -136,7 +217,8 @@ def test_terminal_preserva_revisao_concluida_apos_data_invalida(
     assert "Não foi possível calcular:" in saida
     assert "Tempo restante:" not in saida
     aula_salva = carregar_aulas("aulas.json")[0]
-    assert aula_salva["tempo_revisao_pendente"] == 0
+    assert aula_salva["revisao"]["duracao_minutos"] == 10
+    assert aula_salva["revisao"]["concluida"] is True
     assert aula_salva["microaulas"] == aulas[0]["microaulas"]
 
 
@@ -149,7 +231,7 @@ def test_terminal_informa_que_atividades_cabem(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n"          # Revisão pendente.
+        "10\nn\n"       # Duração de 10 minutos; revisão não concluída.
         "0\n"           # Apenas calcular.
         "2\n"           # Velocidade dos vídeos.
         "2026-10-19\n"  # Data inicial: segunda-feira.
@@ -182,7 +264,7 @@ def test_terminal_informa_que_atividades_nao_cabem(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n"          # Revisão pendente.
+        "10\nn\n"       # Duração de 10 minutos; revisão não concluída.
         "0\n"           # Apenas calcular.
         "2\n"           # Velocidade dos vídeos.
         "2026-10-19\n"  # Data inicial: segunda-feira.
@@ -270,10 +352,10 @@ def test_terminal_calcula_tempo_pendente_de_duas_aulas(
         "2\n"
         "Banco de Dados\nAula 1\n1\n"
         "Parte 1\n26\nn\n"
-        "10\n"
+        "10\nn\n"
         "Progamacao\nAula 2\n1\n"
         "Parte 1\n40\nn\n"
-        "5\n"           # Revisão pendente.
+        "5\nn\n"        # Duração de 5 minutos; revisão não concluída.
         "0\n"           # Apenas calcular.
         "2\n"           # Velocidade dos vídeos.
         "2026-10-19\n"  # Data inicial: segunda-feira.
@@ -307,7 +389,7 @@ def test_terminal_reutiliza_aulas_salvas(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n"          # Revisão pendente.
+        "10\nn\n"       # Duração de 10 minutos; revisão não concluída.
         "0\n"           # Apenas calcular.
         "2\n"           # Velocidade dos vídeos.
         "2026-10-19\n"  # Data inicial: segunda-feira.
@@ -465,7 +547,7 @@ def test_terminal_marca_microaula_e_salva_progresso(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n"          # Revisão pendente.
+        "10\nn\n"       # Duração de 10 minutos; revisão não concluída.
         "0\n"           # Apenas calcular.
         "2\n"           # Velocidade dos vídeos.
         "2026-10-19\n"  # Data inicial: segunda-feira.
@@ -518,7 +600,8 @@ def test_terminal_marca_microaula_e_salva_progresso(
     aula_salva = aulas_salvas[0]
 
     assert aula_salva["microaulas"][1]["concluida"] is True
-    assert aula_salva["tempo_revisao_pendente"] == 10
+    assert aula_salva["revisao"]["duracao_minutos"] == 10
+    assert aula_salva["revisao"]["concluida"] is False
 
 def test_terminal_conclui_revisao_e_salva_progresso(
     monkeypatch, capsys, tmp_path
@@ -529,7 +612,7 @@ def test_terminal_conclui_revisao_e_salva_progresso(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\ns\n"
-        "10\n"          # Revisão pendente.
+        "10\nn\n"       # Duração de 10 minutos; revisão não concluída.
         "0\n"           # Apenas calcular.
         "2\n"           # Velocidade dos vídeos.
         "2026-10-19\n"  # Data inicial: segunda-feira.
@@ -580,7 +663,8 @@ def test_terminal_conclui_revisao_e_salva_progresso(
     aulas_salvas = carregar_aulas("aulas.json")
     aula_salva = aulas_salvas[0]
 
-    assert aula_salva["tempo_revisao_pendente"] == 0
+    assert aula_salva["revisao"]["duracao_minutos"] == 10
+    assert aula_salva["revisao"]["concluida"] is True
     assert aula_salva["microaulas"][0]["concluida"] is True
     assert aula_salva["microaulas"][1]["concluida"] is True
 
@@ -593,7 +677,7 @@ def test_terminal_bloqueia_revisao_com_microaula_pendente(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n"          # Revisão pendente.
+        "10\nn\n"       # Duração de 10 minutos; revisão não concluída.
         "0\n"           # Apenas calcular.
         "2\n"           # Velocidade dos vídeos.
         "2026-10-19\n"  # Data inicial: segunda-feira.
@@ -633,7 +717,8 @@ def test_terminal_bloqueia_revisao_com_microaula_pendente(
     aulas_salvas = carregar_aulas("aulas.json")
     aula_salva = aulas_salvas[0]
 
-    assert aula_salva["tempo_revisao_pendente"] == 10
+    assert aula_salva["revisao"]["duracao_minutos"] == 10
+    assert aula_salva["revisao"]["concluida"] is False
     assert aula_salva["microaulas"][0]["concluida"] is True
     assert aula_salva["microaulas"][1]["concluida"] is False
 
@@ -646,7 +731,7 @@ def test_terminal_soma_disponibilidade_de_varios_dias(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n"          # Revisão pendente.
+        "10\nn\n"       # Duração de 10 minutos; revisão não concluída.
         "0\n"           # Apenas calcular.
         "2\n"           # Velocidade dos vídeos.
         "2026-10-19\n"  # Data inicial.
@@ -736,7 +821,7 @@ def test_terminal_rejeita_data_inexistente(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n"          # Revisão pendente.
+        "10\nn\n"       # Duração de 10 minutos; revisão não concluída.
         "0\n"           # Apenas calcular.
         "2\n"           # Velocidade dos vídeos.
         "2026-02-30\n"  # Data inexistente.
@@ -760,7 +845,7 @@ def test_terminal_rejeita_periodo_invertido(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n"          # Revisão pendente.
+        "10\nn\n"       # Duração de 10 minutos; revisão não concluída.
         "0\n"           # Apenas calcular.
         "2\n"           # Velocidade dos vídeos.
         "2026-10-21\n"  # Data inicial
@@ -834,7 +919,7 @@ def test_terminal_aplica_excecao_zero_na_disponibilidade(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n"          # Revisão pendente.
+        "10\nn\n"       # Duração de 10 minutos; revisão não concluída.
         "0\n"           # Apenas calcular.
         "2\n"           # Velocidade dos vídeos.
         "2026-10-19\n"  # Data inicial: segunda-feira.
@@ -869,7 +954,7 @@ def test_terminal_rejeita_excecao_com_minutos_negativos(
         "Banco de Dados\nAula 1\n2\n"
         "Parte 1\n29\ns\n"
         "Parte 2\n26\nn\n"
-        "10\n"          # Revisão pendente.
+        "10\nn\n"       # Duração de 10 minutos; revisão não concluída.
         "0\n"           # Apenas calcular.
         "2\n"           # Velocidade dos vídeos.
         "2026-10-19\n"  # Data inicial: segunda-feira.

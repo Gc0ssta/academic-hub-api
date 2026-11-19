@@ -122,10 +122,15 @@ def calcular_tempo_total_pendente(
 
     for aula in aulas:
 
-        tempo_revisao = aula["tempo_revisao_pendente"]
+        revisao = aula["revisao"]
+        if revisao["duracao_minutos"] <= 0:
+            raise ValueError("A duração da revisão deve ser maior que zero.")
+        if type(revisao["concluida"]) is not bool:
+            raise TypeError("A conclusão da revisão deve ser um booleano.")
 
-        if tempo_revisao < 0:
-            raise ValueError("O tempo de revisão pendente não pode ser negativo.")
+        tempo_revisao = 0.0
+        if revisao["concluida"] is False:
+            tempo_revisao = revisao["duracao_minutos"]
 
         microaulas_da_aula = aula["microaulas"]
 
@@ -152,4 +157,3 @@ def calcular_tempo_disponivel_total(
         total += min_diario
 
     return total
-    

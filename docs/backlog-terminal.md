@@ -103,7 +103,7 @@ Ainda será preciso definir tecnicamente como representar e persistir a capacida
 - Se a próxima atividade não couber na capacidade restante da data, manter a sobra livre e procurar uma data posterior em que ela caiba. Não preencher a sobra com uma microaula posterior, uma atividade de outra disciplina ou uma revisão fora de ordem. A antecipação para hoje também deve preservar essa sequência.
 - A sequência de cada aula é: vídeos, revisão final obrigatória e então próxima aula, inclusive quando há troca de disciplina. Se a revisão ficar pendente, não antecipar a aula seguinte. Essa regra de planejamento não conclui a revisão automaticamente ao terminar os vídeos; o progresso continua dependendo do registro do usuário.
 - A revisão é planejada inteira em uma única data, como as microaulas. Se exigir 10 minutos e restarem apenas 5 minutos não alocados, agendar em uma data posterior em que caiba, antes da próxima aula. O usuário pode aumentar explicitamente a disponibilidade da data e recalcular para tentar antecipá-la.
-- Guardar separadamente a duração da revisão, maior que zero, e seu estado de conclusão. Concluir a revisão preserva a duração cadastrada e faz seu tempo pendente calculado ser zero. A velocidade de reprodução dos vídeos não altera a duração da revisão; sua conclusão continua exigindo todos os vídeos concluídos. Decisão confirmada em 29/10/2026; mudança ainda não implementada.
+- Guardar separadamente a duração da revisão, maior que zero, e seu estado de conclusão. Concluir a revisão preserva a duração cadastrada e faz seu tempo pendente calculado ser zero. A velocidade de reprodução dos vídeos não altera a duração da revisão; sua conclusão continua exigindo todos os vídeos concluídos. Decisão confirmada em 29/10/2026; cadastro, cálculo e conclusão adaptados em 18/11/2026.
 - Cada projeto recebe uma estimativa inicial de esforço, que pode ser distribuída entre dias respeitando a disponibilidade. Essa estimativa permite visualizar o planejamento futuro; não exige registrar minutos trabalhados nem atualizar diariamente o esforço restante.
 - A reserva entre terminar a preparação e concluir o projeto corresponde à própria estimativa de execução distribuída pela rotina e pelas exceções. Não acrescentar uma margem independente em dias nesta fase. Exemplo: cinco horas podem ocupar três datas com duas horas, duas horas e uma hora de trabalho; a quantidade de datas depende da disponibilidade, não é um número fixo. Os requisitos precisam estar concluídos antes do início desse período, conforme a regra de início no dia seguinte. Decisão confirmada em 29/10/2026.
 - No cadastro, permitir informar uma estimativa inicial para projetos fase 1 e outra para fase 2, reutilizando os valores nas respectivas entregas das disciplinas. Cada projeto conserva sua própria estimativa. Depois do cadastro, permitir editar a estimativa de um projeto específico sem modificar os demais; não implementar edição global de padrões nesta fase. Os valores iniciais são uma facilidade de preenchimento, não uma configuração compartilhada que altera retroativamente as entregas. Decisão de 02/11/2026. Não solicitar duração de provas para distribuição no calendário nesta fase.
@@ -234,7 +234,7 @@ As estimativas de projetos permitem visualizar o período, reservar esforço e v
 
 Detalhes técnicos a resolver antes de T04 e T05, com comportamento de produto já definido:
 
-- Planejar a adaptação dos dados existentes para a duração e a conclusão separadas da revisão. O campo atual de minutos pendentes não permite recuperar a duração original quando vale zero; não inventar essa informação nem sobrescrever os dados silenciosamente.
+- Adaptação de revisões implementada em 18/11/2026: minutos antigos positivos tornam-se a duração com `concluida=False`; zero exige a duração original informada pelo usuário, preservando `concluida=True`. A estrutura nova contém ID, duração e conclusão. A conversão ocorre em memória antes do menu e é gravada no momento habitual, após uma ação válida; respostas inválidas não sobrescrevem o arquivo. Revisões já adaptadas mantêm ID, duração e progresso sem novas perguntas.
 - Definir tecnicamente como representar e persistir as alocações do dia e as antecipações, sem reutilizar a capacidade de atividades concluídas. O comportamento esperado está definido acima; não é necessário medir o tempo real gasto.
 
 Antes de T09–T11:
@@ -243,7 +243,7 @@ Antes de T09–T11:
 
 Antes de T08:
 
-- Se uma microaula concluída for reaberta depois da revisão, o que deve acontecer com a revisão? Hoje o sistema guarda apenas os minutos pendentes, sem conservar uma duração original separada.
+- Se uma microaula concluída for reaberta depois da revisão, o que deve acontecer com a revisão? A duração original já é preservada separadamente, mas a regra de reabertura ainda precisa ser definida.
 
 ## Issues propostas
 
@@ -276,7 +276,7 @@ Antes de T08:
 
 ### T03 — Representar atividades pendentes para o agendamento
 
-**Estado:** em andamento. Implementada `gerar_atividades_microaulas_pendentes`, com filtragem das concluídas, cálculo pela velocidade, preservação da ordem e da entrada e validações consistentes com os cálculos existentes. Testes cobrem esses comportamentos; suíte com 128 testes passando na validação desta etapa. Ainda faltam vínculos com aula/disciplina, identificação estável, revisões e composição da sequência. A função auxiliar não está integrada ao fluxo do terminal e não encerra T03.
+**Estado:** em andamento. Microaulas possuem IDs persistidos, reutilizados nas atividades pendentes. O cadastro das revisões já separa ID, duração original e conclusão, com adaptação dos arquivos antigos e uso pelo cálculo e progresso. Ainda faltam vínculos das atividades com aula/disciplina, geração das atividades de revisão e composição da sequência. A lista de atividades ainda não está integrada ao terminal nem à distribuição por datas. Validação local deste incremento: 156 testes passando.
 
 **Problema:** o total de minutos não informa qual vídeo ou revisão deve ser realizado em cada data.
 

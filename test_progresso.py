@@ -18,7 +18,7 @@ def test_marcar_microaula_concluida_indice_1():
                     "concluida": False,
                 },
             ],
-            "tempo_revisao_pendente": 10,
+            "revisao": {"id": "rev-teste", "duracao_minutos": 10, "concluida": False},
         }
 
     marcar_microaula_concluida(aulas, 1)
@@ -27,7 +27,7 @@ def test_marcar_microaula_concluida_indice_1():
     assert aulas["microaulas"][0]["concluida"] is False
     assert aulas["microaulas"][0]["duracao_minutos"] == 29
     assert aulas["microaulas"][1]["duracao_minutos"] == 26
-    assert aulas["tempo_revisao_pendente"] == 10
+    assert aulas["revisao"] == {"id": "rev-teste", "duracao_minutos": 10, "concluida": False}
 
 def test_rejeita_indice_negativo():
 
@@ -46,7 +46,7 @@ def test_rejeita_indice_negativo():
                     "concluida": False,
                 },
             ],
-            "tempo_revisao_pendente": 10,
+            "revisao": {"id": "rev-teste", "duracao_minutos": 10, "concluida": False},
         }
         
     with pytest.raises(IndexError):
@@ -72,7 +72,7 @@ def test_rejeita_indice_fora_da_lista():
                     "concluida": False,
                 },
             ],
-            "tempo_revisao_pendente": 10,
+            "revisao": {"id": "rev-teste", "duracao_minutos": 10, "concluida": False},
         }
 
     with pytest.raises(IndexError):
@@ -98,7 +98,7 @@ def test_rejeita_indice_decimal():
                     "concluida": False,
                 },
             ],
-            "tempo_revisao_pendente": 10,
+            "revisao": {"id": "rev-teste", "duracao_minutos": 10, "concluida": False},
         }
 
     with pytest.raises(TypeError):
@@ -123,12 +123,12 @@ def test_concluir_revisao_permitida():
                     "concluida": True,
                 },
             ],
-            "tempo_revisao_pendente": 10,
+            "revisao": {"id": "rev-teste", "duracao_minutos": 10, "concluida": False},
         }
 
     marcar_revisao_concluida(aulas)
 
-    assert aulas["tempo_revisao_pendente"] == 0
+    assert aulas["revisao"] == {"id": "rev-teste", "duracao_minutos": 10, "concluida": True}
     assert aulas["microaulas"][0]["concluida"] is True
     assert aulas["microaulas"][1]["concluida"] is True
 
@@ -148,12 +148,12 @@ def test_concluir_revisao_bloqueada():
                     "concluida": False,
                 },
             ],
-            "tempo_revisao_pendente": 10,
+            "revisao": {"id": "rev-teste", "duracao_minutos": 10, "concluida": False},
         }
 
     with pytest.raises(ValueError):
         marcar_revisao_concluida(aulas)
 
-    assert aulas["tempo_revisao_pendente"] == 10
+    assert aulas["revisao"] == {"id": "rev-teste", "duracao_minutos": 10, "concluida": False}
     assert aulas["microaulas"][0]["concluida"] is True
     assert aulas["microaulas"][1]["concluida"] is False
